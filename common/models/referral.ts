@@ -4,7 +4,7 @@ import Product from "./product";
 /**
  * @description 리퍼럴 모델
  */
-export interface Referral {
+export default interface Referral {
   // pk
   id: number;
   // 해시 ID (URL에 사용)
@@ -12,9 +12,9 @@ export interface Referral {
   // 생성일시
   createdAt: Date;
   // 소유자
-  creator?: User;
+  creator: User;
   // 연결 제품
-  product?: Product;
+  product: Product;
   // 구매 개수
   purchaseCount: number;
   // 구매 총 금액

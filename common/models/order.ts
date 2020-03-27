@@ -11,7 +11,8 @@ export enum OrderStatus {
 
 export enum PaymentType {
   Credit,
-  Transfer
+  Transfer,
+  None
 }
 
 /**
@@ -35,7 +36,7 @@ export default interface Order {
   // 배송 주소지
   address: Address;
   // (택배 발송시) 송장번호
-  packageId?: string;
+  packageId: string;
   // 구매 제품
-  items?: OrderItem[];
+  items: OrderItem[];
 }

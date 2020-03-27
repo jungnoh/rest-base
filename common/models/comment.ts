@@ -10,7 +10,7 @@ export default interface Comment {
   // 작성일시
   createdAt: Date;
   // 해당 댓글
-  post?: Post;
+  post: Post;
   // 작성자
   author: User;
   // 댓글 내용

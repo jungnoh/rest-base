@@ -9,5 +9,5 @@ export default interface Board {
   // 댓글 표시여부
   showComments: boolean;
   // 댓글에 평점 표시 여부
-  showCommentRating: boolean;
+  showCommentRatings: boolean;
 }

@@ -1,14 +1,16 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import {Post, User} from '../../../common/models';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Board, Comment, Post, User } from '../../../common/models';
 import UserEntity from './user';
+import BoardEntity from './board';
+import CommentEntity from './comment';
 
 @Entity()
 export default class PostEntity implements Post {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  board: string;
+  @ManyToOne(type => BoardEntity)
+  board: Board;
 
   @Column()
   title: string;
@@ -19,6 +21,9 @@ export default class PostEntity implements Post {
   @ManyToOne(() => UserEntity, {onDelete: 'CASCADE', nullable: false})
   author: User;
 
-  @Column('timestamp with time zone', {default: () => 'CURRENT_TIMESTAMP', nullable: false})
+  @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP', nullable: false})
   createdAt: Date;
+
+  @OneToMany(type => CommentEntity, comment => comment.post)
+  comments: Comment[];
 }
