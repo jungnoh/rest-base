@@ -1,7 +1,7 @@
 import Order from "./order";
 import Product from "./product";
 import ProductOption from "./productOption";
-import { Referral } from "./referral";
+import Referral from "./referral";
 
 /**
  * @description 주문 세부상품 모델

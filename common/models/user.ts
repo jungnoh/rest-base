@@ -1,8 +1,8 @@
 import Address from "./address";
 
 export enum UserType {
-  Member,  // 일반 회원
-  Partner  // 파트너 회원
+  Member = 'member',  // 일반 회원
+  Partner = 'partner' // 파트너 회원
 }
 
 /**
@@ -19,6 +19,10 @@ export default interface User {
   password: string;
   // 이메일
   email: string;
+  // 이름
+  name: string;
+  // 전화번호
+  phone: string;
   // 관리자 수준
   adminLevel: number;
   // 사용자 등급
@@ -35,4 +39,6 @@ export default interface User {
   balance: number;
   // 유저별 랜딩페이지 JSON
   landingPage: string; 
+  // 사용자 활성화 여부
+  active: boolean;
 }
