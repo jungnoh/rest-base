@@ -17,4 +17,7 @@ export default class UserEntity implements User {
 
   @Column()
   name: string;
+
+  @Column()
+  active: boolean;
 }

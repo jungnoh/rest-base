@@ -20,5 +20,5 @@ export default class PostEntity implements Post {
   author: User;
 
   @Column('timestamp with time zone', {default: () => 'CURRENT_TIMESTAMP', nullable: false})
-  createdAt: Date
+  createdAt: Date;
 }
