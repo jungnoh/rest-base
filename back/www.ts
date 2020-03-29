@@ -1,7 +1,7 @@
 // MUST setup before running/importing anything
 import dotenv from 'dotenv';
 dotenv.config();
-import './logger';
+import './src/logger';
 import createApp from './src';
 
 // import fs from 'fs';

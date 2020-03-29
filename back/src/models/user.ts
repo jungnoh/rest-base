@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, ManyToOne } from 'typeorm';
 import { Address, User } from '../../../common/models';
 import { UserType } from '../../../common/models/user';
 import AddressEntity from './address';
@@ -26,10 +26,10 @@ export default class UserEntity implements User {
   @Column('varchar', {length: 40})
   phone: string;
 
-  @Column('smallint')
+  @Column('smallint', {default: 0})
   adminLevel: number;
 
-  @Column('int')
+  @Column('int', {default: 0})
   level: number;
 
   @Column('enum', {enum: UserType, default: UserType.Member})
@@ -41,10 +41,10 @@ export default class UserEntity implements User {
   @Column('boolean', {default: true})
   allowPush: boolean;
 
-  @OneToOne(type => AddressEntity)
+  @ManyToOne(type => AddressEntity, {cascade: true})
   address: Address;
 
-  @Column('int', {unsigned: true})
+  @Column('int', {default: 0, unsigned: true})
   balance: number;
 
   @Column('mediumtext')

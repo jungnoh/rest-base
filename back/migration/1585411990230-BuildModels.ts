@@ -1,11 +1,11 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class BuildModel1585391041814 implements MigrationInterface {
-    name = 'BuildModel1585391041814'
+export class BuildModels1585411990230 implements MigrationInterface {
+    name = 'BuildModels1585411990230'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query("CREATE TABLE `address_entity` (`id` int NOT NULL AUTO_INCREMENT, `name` varchar(40) NOT NULL, `phone` varchar(40) NOT NULL, `address1` varchar(80) NOT NULL, `address2` varchar(80) NOT NULL, `postalCode` varchar(10) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB", undefined);
-        await queryRunner.query("CREATE TABLE `user_entity` (`id` int NOT NULL AUTO_INCREMENT, `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, `username` varchar(255) NOT NULL, `password` varchar(255) NOT NULL, `email` varchar(255) NOT NULL, `name` varchar(20) NOT NULL, `phone` varchar(40) NOT NULL, `adminLevel` smallint NOT NULL, `level` int NOT NULL, `type` enum ('member', 'partner') NOT NULL DEFAULT 'member', `allowSMS` tinyint NOT NULL DEFAULT 1, `allowPush` tinyint NOT NULL DEFAULT 1, `balance` int UNSIGNED NOT NULL, `landingPage` mediumtext NOT NULL, `active` tinyint NOT NULL DEFAULT 1, PRIMARY KEY (`id`)) ENGINE=InnoDB", undefined);
+        await queryRunner.query("CREATE TABLE `user_entity` (`id` int NOT NULL AUTO_INCREMENT, `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, `username` varchar(255) NOT NULL, `password` varchar(255) NOT NULL, `email` varchar(255) NOT NULL, `name` varchar(20) NOT NULL, `phone` varchar(40) NOT NULL, `adminLevel` smallint NOT NULL DEFAULT 0, `level` int NOT NULL DEFAULT 0, `type` enum ('member', 'partner') NOT NULL DEFAULT 'member', `allowSMS` tinyint NOT NULL DEFAULT 1, `allowPush` tinyint NOT NULL DEFAULT 1, `balance` int UNSIGNED NOT NULL, `landingPage` mediumtext NOT NULL, `active` tinyint NOT NULL DEFAULT 1, PRIMARY KEY (`id`)) ENGINE=InnoDB", undefined);
         await queryRunner.query("CREATE TABLE `ask_post_entity` (`id` int NOT NULL AUTO_INCREMENT, `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, `answeredAt` timestamp NULL, `title` varchar(160) NOT NULL, `content` mediumtext NOT NULL, `answerContent` mediumtext NOT NULL, `answered` tinyint NOT NULL DEFAULT 0, `authorId` int NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB", undefined);
         await queryRunner.query("CREATE TABLE `board_entity` (`id` int NOT NULL AUTO_INCREMENT, `key` varchar(20) NOT NULL, `showComments` tinyint NOT NULL DEFAULT 0, `showCommentRatings` tinyint NOT NULL DEFAULT 0, PRIMARY KEY (`id`)) ENGINE=InnoDB", undefined);
         await queryRunner.query("CREATE TABLE `campaign_log_entity` (`id` int NOT NULL AUTO_INCREMENT, `type` varchar(20) NOT NULL, `method` varchar(80) NOT NULL, `searchTerm` varchar(255) NULL, `ip` varchar(40) NOT NULL, `country` varchar(40) NULL, `region` varchar(40) NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB", undefined);

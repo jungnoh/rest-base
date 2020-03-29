@@ -2,13 +2,15 @@ import express from 'express';
 import expressSession from 'express-session';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
-
+import winston from 'winston';
 import router from './routes';
 import {handleError} from './middlewares/error';
+import { createConnection } from 'typeorm';
 
 async function setup(isDev: boolean) {
   if (isDev) {
-    console.log('Running in development mode');
+    winston.info('Running in development mode');
+    await createConnection();
   }
   try {
   } catch (err) {
