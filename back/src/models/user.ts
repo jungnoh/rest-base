@@ -26,6 +26,9 @@ export default class UserEntity implements User {
   @Column('varchar', {length: 40})
   phone: string;
 
+  @Column('varchar', {length: 320})
+  impIdentityKey: string;
+
   @Column('smallint', {default: 0})
   adminLevel: number;
 

@@ -27,6 +27,8 @@ export interface UserSignup extends UserProfile {
   username: string;
   // 비밀번호 (해시)
   password: string;
+  // 아임포트 본인인증 키
+  impIdentityKey: string;
 }
 
 /**
