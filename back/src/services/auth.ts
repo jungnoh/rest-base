@@ -17,7 +17,7 @@ export const USER_CHANGEABLE_FIELDS = [
  * @param password 비밀번호
  */
 export async function authenticate(username: string, password: string):
-ServiceResult<'BAD_CREDENTIALS' | 'INACTIVE'> {
+ServiceResult<'BAD_CREDENTIALS' | 'INACTIVE', User> {
   try {
     const userRepo = getRepository(UserEntity);
     const user = await userRepo.findOne({username});
@@ -40,7 +40,8 @@ ServiceResult<'BAD_CREDENTIALS' | 'INACTIVE'> {
       };
     }
     return {
-      success: true
+      success: true,
+      result: user
     };
   } catch (err) {
     throw err;
@@ -52,7 +53,7 @@ ServiceResult<'BAD_CREDENTIALS' | 'INACTIVE'> {
  * @param profile 생성할 사용자 프로필
  */
 export async function create(profile: UserSignup):
-ServiceResult<'USERNAME_EXISTS' | 'EMAIL_EXISTS' | 'IMPKEY_EXISTS'> {
+ServiceResult<'USERNAME_EXISTS' | 'EMAIL_EXISTS' | 'IMPKEY_EXISTS', User> {
   try {
     // 이메일, 사용자명이 존재하는지 체크
     const existingUser = await getManager()
@@ -90,7 +91,8 @@ ServiceResult<'USERNAME_EXISTS' | 'EMAIL_EXISTS' | 'IMPKEY_EXISTS'> {
     });
 
     return {
-      success: true
+      success: true,
+      result: userObj
     };
   } catch (err) {
     throw err;
