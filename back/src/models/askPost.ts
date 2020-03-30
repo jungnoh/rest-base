@@ -11,5 +11,7 @@ const schema = new mongo.Schema<AskPost>({
   answered: {default: false, required: true, type: String}
 }, {timestamps: true});
 
+schema.index('author -createdAt');
+
 const AskPostModel = mongo.model<AskPost & mongo.TimestampedDocument>('AskPost', schema);
 export default AskPostModel;
