@@ -5,8 +5,6 @@ import Product from "./product";
  * @description 리퍼럴 모델
  */
 export default interface Referral {
-  // pk
-  id: number;
   // 해시 ID (URL에 사용)
   hashId: string;
   // 생성일시

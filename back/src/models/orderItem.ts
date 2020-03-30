@@ -1,32 +1,16 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne, Column, OneToOne } from "typeorm";
-import { OrderItem, Order, Product, ProductOption } from "../../../common/models";
-import OrderEntity from "./order";
-import ProductEntity from "./product";
-import ProductOptionEntity from "./productOption";
+import { OrderItem } from "../../../common/models";
+import mongo from "mongoose";
+import { ObjectId } from "bson";
 
-@Entity()
-export default class OrderItemEntity implements OrderItem {
-  @PrimaryGeneratedColumn()
-  id: number;
+const schema = new mongo.Schema<OrderItem>({
+  count: {default: 1, type: Number},
+  itemPrice: {required: true, type: Number},
+  product: {ref: 'Product', required: true, type: ObjectId},
+  productName: {required: true, type: String},
+  option: {ref: 'Option', required: true, type: ObjectId},
+  optionName: {required: true, type: String},
+  referral: {ref: 'Referral', required: false, type: ObjectId}
+});
 
-  @ManyToOne(type => OrderEntity)
-  order?: Order;
-
-  @Column('smallint', {unsigned: true})
-  count: number;
-
-  @Column('int', {unsigned: true})
-  itemPrice: number;
-
-  @ManyToOne(type => ProductEntity, {onDelete: 'SET NULL'})
-  product: Product;
-
-  @ManyToOne(type => ProductOptionEntity, {onDelete: 'SET NULL'})  
-  option: ProductOption;
-
-  @Column('varchar', {length: 160})
-  productName: string;
-
-  @Column('varchar', {length: 160})
-  optionName: string;
-}
+const OrderItemModel = mongo.model<OrderItem & mongo.TimestampedDocument>('OrderItem', schema);
+export default OrderItemModel;

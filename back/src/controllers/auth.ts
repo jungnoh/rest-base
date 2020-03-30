@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import * as AuthService from '../services/auth';
 import passport from 'passport';
+import winston from 'winston';
 
 export async function signup(req: Request, res: Response, next: NextFunction) {
   try {
@@ -40,6 +41,7 @@ export const login = [
     } else if (err === 'INACTIVE') {
       res.status(403).json({reason: err});
     } else {
+      winston.warn(`Uncaught error during authentication: ${err}`);
       res.status(500).json({});
     }
   }

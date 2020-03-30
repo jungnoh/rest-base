@@ -1,23 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import { Address } from "../../../common/models";
+import mongo from 'mongoose';
 
-@Entity()
-export default class AddressEntity implements Address {
-  @PrimaryGeneratedColumn()
-  id: number;
+const schema = new mongo.Schema<Address>({
+  name: {required: true, type: String},
+  phone: {required: true, type: String},
+  address1: {required: true, type: String},
+  address2: {type: String},
+  postalCode: {required: true, type: String}
+});
 
-  @Column("varchar", {length: 40})
-  name: string;
-
-  @Column("varchar", {length: 40})
-  phone: string;
-
-  @Column("varchar", {length: 80})
-  address1: string;
-
-  @Column("varchar", {length: 80})
-  address2: string;
-
-  @Column("varchar", {length: 10})
-  postalCode: string;
-}
+const AddressModel = mongo.model<Address & mongo.Document>('Address', schema);
+export default AddressModel;

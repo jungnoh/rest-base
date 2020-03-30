@@ -2,8 +2,6 @@
  * @description 일자별 유입로그 모델
  */
 export default interface InboundLog {
-  // pk
-  id: number;
   // 일자 (시간 X)
   date: Date;
   // 유입경로 (형식)

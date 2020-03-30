@@ -1,29 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
-import { Board, Comment, Post, User } from '../../../common/models';
-import UserEntity from './user';
-import BoardEntity from './board';
-import CommentEntity from './comment';
+import mongo from "mongoose";
+import { ObjectId } from "bson";
+import { Post } from '../../../common/models';
 
-@Entity()
-export default class PostEntity implements Post {
-  @PrimaryGeneratedColumn()
-  id: number;
+const schema = new mongo.Schema<Post>({
+  board: {ref: 'Board', required: true, type: ObjectId},
+  title: {required: true, type: String},
+  content: {required: true, type: String},
+  author: {ref: 'User', required: true, type: ObjectId}
+}, {timestamps: true});
 
-  @ManyToOne(type => BoardEntity)
-  board: Board;
+schema.index('board -createdAt');
 
-  @Column()
-  title: string;
-
-  @Column()
-  content: string;
-
-  @ManyToOne(() => UserEntity, {onDelete: 'CASCADE', nullable: false})
-  author: User;
-
-  @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP', nullable: false})
-  createdAt: Date;
-
-  @OneToMany(type => CommentEntity, comment => comment.post)
-  comments: Comment[];
-}
+const PostModel = mongo.model('Post', schema);
+export default PostModel;

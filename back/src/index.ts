@@ -1,20 +1,34 @@
+import MongoStore from 'connect-mongo';
 import express from 'express';
 import expressSession from 'express-session';
 import helmet from 'helmet';
+import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import winston from 'winston';
 import router from './routes';
 import {handleError} from './middlewares/error';
-import { createConnection, getRepository } from 'typeorm';
-import { TypeormStore } from 'connect-typeorm/out';
-import { SessionEntity } from './models/session';
 import passport from 'passport';
 import * as PassportStrategy from './util/passport';
 
 async function setup(isDev: boolean) {
   if (isDev) {
     winston.info('Running in development mode');
-    await createConnection();
+    if (process.env.MONGO_HOST === undefined) {
+      winston.error('MONGO_HOST not found');
+      process.exit(1);
+    }
+    if (process.env.SESSION_SECRET === undefined) {
+      winston.error('SESSION_SECRET not found');
+      process.exit(1);
+    }
+    const mongooseConfig: mongoose.ConnectionOptions = {
+      useCreateIndex: true,
+      useFindAndModify: false,
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    };
+    await mongoose.connect(process.env.MONGO_HOST, mongooseConfig);
+    winston.info('Connected to mongodb');
   }
   try {
   } catch (err) {
@@ -35,11 +49,9 @@ export default async function createApp(isDev = false) {
     resave: false,
     saveUninitialized: false,
     secret: process.env.SESSION_SECRET!,
-    store: new TypeormStore({
-      cleanupLimit: 2,
-      limitSubquery: false,
-      ttl: 86400
-    }).connect(getRepository(SessionEntity))
+    store: new (MongoStore(expressSession))({
+      mongooseConnection: mongoose.connection
+    })
   }));
 
   app.use(helmet());

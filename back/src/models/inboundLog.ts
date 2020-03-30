@@ -1,20 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import { InboundLog } from "../../../common/models";
+import mongo from "mongoose";
+import { ObjectId } from "bson";
 
-@Entity()
-export default class InboundLogEntity implements InboundLog {
-  @PrimaryGeneratedColumn()
-  id: number;
+const schema = new mongo.Schema<InboundLog>({
+  date: {required: true, type: Date},
+  type: {required: true, type: String},
+  method: {required: true, type: String},
+  count: {default: 0, required: true, type: Number}
+});
 
-  @Column('date')
-  date: Date;
-
-  @Column('varchar', {length: 20})
-  type: string;
-
-  @Column('varchar', {length: 80})
-  method: string;
-
-  @Column('int', {default: 0, unsigned: true})
-  count: number;
-}
+const InboundLogModel = mongo.model<InboundLog & mongo.Document>('InboundLog', schema);
+export default InboundLogModel;

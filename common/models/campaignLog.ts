@@ -2,8 +2,6 @@
  * @description 캠페인 (검색, UTM 등) 로그 기록 모델
  */
 export default interface CampaignLog {
-  // pk
-  id: number;
   // 유입경로 (형식)
   type: string;
   // 유입 세부경로

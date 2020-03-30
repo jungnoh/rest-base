@@ -35,8 +35,6 @@ export interface UserSignup extends UserProfile {
  * @description 사용자 모델
  */
 export default interface User extends UserSignup {
-  // pk
-  id: number;
   // 생성일자
   createdAt: Date;
   // 관리자 수준

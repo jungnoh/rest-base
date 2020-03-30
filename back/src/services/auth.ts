@@ -1,7 +1,7 @@
 // 사용자 모델 중 인증 및 인증 관리를 위한 서비스입니다. (사용자 관리는 포함되지 않음)
 
-import { getRepository, getManager } from "typeorm";
-import UserEntity from "../models/user";
+import AddressModel from "../models/address";
+import UserModel from "../models/user";
 import * as Password from "../util/password";
 import User, { UserSignup } from "../../../common/models/user";
 import lodash from "lodash";
@@ -19,8 +19,7 @@ export const USER_CHANGEABLE_FIELDS = [
 export async function authenticate(username: string, password: string):
 ServiceResult<'BAD_CREDENTIALS' | 'INACTIVE', User> {
   try {
-    const userRepo = getRepository(UserEntity);
-    const user = await userRepo.findOne({username});
+    const user = await UserModel.findOne({username});
     if (!user) {
       return {
         success: false,
@@ -35,7 +34,7 @@ ServiceResult<'BAD_CREDENTIALS' | 'INACTIVE', User> {
     }
     if (!user.active) {
       return {
-        success: true,
+        success: false,
         reason: 'INACTIVE'
       };
     }
@@ -56,13 +55,12 @@ export async function create(profile: UserSignup):
 ServiceResult<'USERNAME_EXISTS' | 'EMAIL_EXISTS' | 'IMPKEY_EXISTS', User> {
   try {
     // 이메일, 사용자명이 존재하는지 체크
-    const existingUser = await getManager()
-      .createQueryBuilder(UserEntity, 'user')
-      .where(`user.username = :username
-        OR user.email = :email
-        OR (user.impIdentityKey = :impIdentityKey AND user.phone = :phone)`, profile)
-      .getOne();
-    if (existingUser !== undefined) {
+    const existingUser = await UserModel.findOne({$or: [
+      {username: profile.username},
+      {email: profile.email},
+      {impIdentityKey: profile.impIdentityKey, phone: profile.phone}
+    ]});
+    if (existingUser !== null) {
       if (existingUser.username === profile.username) {
         return {
           success: false,
@@ -81,15 +79,12 @@ ServiceResult<'USERNAME_EXISTS' | 'EMAIL_EXISTS' | 'IMPKEY_EXISTS', User> {
       }
     }
 
-    const userObj = new UserEntity();
-    Object.assign(userObj, profile);
-    userObj.password = await Password.hash(userObj.password);
-    userObj.landingPage = '{}';
+    const addressObj = await AddressModel.create(profile.address);
 
-    await getManager().transaction(async manager => {
-      await manager.save(userObj);
-    });
-
+    const userObj = await UserModel.create(Object.assign(profile, {
+      password: await Password.hash(profile.password),
+      address: addressObj
+    }));
     return {
       success: true,
       result: userObj
@@ -113,20 +108,15 @@ ServiceResult<'USER_NEXIST'> {
       updates = lodash.pick(change, USER_CHANGEABLE_FIELDS);
     }
     let error = null;
-    await getManager().transaction(async manager => {
-      const user = manager.findOne(UserEntity, {username});
-      if (!user) {
-        error = 'USER_NEXIST';
-        return;
-      }
-      Object.assign(user, updates);
-      await manager.save(user);
-    });
-    if (error) {
-      return {success: false, reason: error};
-    } else {
-      return {success: true};
+
+    const user = await UserModel.findOne({username});
+    if (!user) {
+      error = 'USER_NEXIST';
+      return {success: false, reason: 'USER_NEXIST'};
     }
+    Object.assign(user, updates);
+    await user.save();
+    return {success: true};
   } catch (err) {
     throw err;
   }
@@ -138,7 +128,7 @@ ServiceResult<'USER_NEXIST'> {
  */
 export async function view(username: string): ServiceResult<'USER_NEXIST', User> {
   try {
-    const user = await getManager().findOne(UserEntity, {username});
+    const user = await UserModel.findOne({username});
     if (!user) {
       return {success: false, reason: 'USER_NEXIST'};
     }

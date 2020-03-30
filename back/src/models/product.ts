@@ -1,28 +1,19 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import { Product, ProductOption } from "../../../common/models";
-import { ProductType } from "../../../common/models/product";
-import ProductOptionEntity from "./productOption";
+import { Product } from "../../../common/models";
+import mongo from "mongoose";
+import { ObjectId } from "bson";
 
-@Entity()
-export default class ProductEntity implements Product {
-  @PrimaryGeneratedColumn()
-  id: number;
+const schema = new mongo.Schema<Product>({
+  type: {enum: ['item', 'service'], required: true, type: String},
+  title: {required: true, type: String},
+  description: {required: true, type: String},
+  basePrice: {required: true, type: Number},
+  display: {default: false, required: true, type: Boolean},
+  options: {
+    default: [],
+    required: true,
+    type: [{ref: 'ProductOption', required: true, type: ObjectId}]
+  }
+});
 
-  @Column('enum', {enum: ProductType, default: ProductType.Item})
-  type: ProductType;
-
-  @Column('varchar', {length: 160})
-  title: string;
-
-  @Column('mediumtext')
-  description: string;
-
-  @Column('int', {unsigned: true})
-  basePrice: number;
-
-  @Column('boolean', {default: false})
-  display: boolean;
-
-  @OneToMany(type => ProductOptionEntity, option => option.product)
-  options: ProductOption[];
-}
+const ProductModel = mongo.model<Product & mongo.Document>('Product', schema);
+export default ProductModel;

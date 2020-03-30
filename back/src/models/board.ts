@@ -1,17 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import { Board } from "../../../common/models";
+import mongo from "mongoose";
+import { ObjectId } from "bson";
 
-@Entity()
-export default class BoardEntity implements Board {
-  @PrimaryGeneratedColumn()
-  id: number;
+const schema = new mongo.Schema<Board>({
+  key: {required: true, type: String, unique: true},
+  showComments: {default: false, required: true, type: Boolean},
+  showCommentRatings: {default: false, required: true, type: Boolean}
+});
 
-  @Column('varchar', {length: 20})
-  key: string;
-
-  @Column('boolean', {default: false})
-  showComments: boolean;
-
-  @Column('boolean', {default: false})
-  showCommentRatings: boolean;
-}
+const BoardModel = mongo.model<Board & mongo.Document>('Board', schema);
+export default BoardModel;

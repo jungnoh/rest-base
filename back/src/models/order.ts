@@ -1,39 +1,39 @@
-import { Order, User, Address, OrderItem } from "../../../common/models";
-import { PrimaryGeneratedColumn, Column, ManyToOne, Entity, OneToOne, OneToMany } from "typeorm";
-import UserEntity from "./user";
-import { OrderStatus, PaymentType } from "../../../common/models/order";
-import AddressEntity from "./address";
-import OrderItemEntity from "./orderItem";
+import { Order } from "../../../common/models";
+import mongo from "mongoose";
+import { ObjectId } from "bson";
 
-@Entity()
-export default class OrderEntity implements Order {
-  @PrimaryGeneratedColumn()
-  id: number;
+const schema = new mongo.Schema<Order>({
+  paymentAt: {default: null, required: false, type: Date},
+  user: {ref: 'User', required: true, type: ObjectId},
+  status: {
+    enum: ['pending_payment', 'preparing', 'sent', 'cancelled'],
+    default: 'pending_payment',
+    type: String
+  },
+  paymentType: {
+    enum: ['credit', 'transfer', 'none'],
+    required: true,
+    type: String
+  },
+  impPurchaseId: {required: false, type: String},
+  address: {
+    ref: 'Address',
+    required: true,
+    type: ObjectId
+  },
+  packageId: {
+    required: false,
+    type: String
+  },
+  items: {
+    default: [],
+    type: [{type: ObjectId, ref: 'OrderItem'}],
+  }
+}, {
+  timestamps: true
+});
 
-  @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP', nullable: false})
-  createdAt: Date;
+schema.index('user -createdAt');
 
-  @Column('timestamp')
-  paymentAt: Date;
-
-  @ManyToOne(type => UserEntity)
-  user: User;
-
-  @Column('enum', {enum: OrderStatus, default: OrderStatus.PendingPayment})
-  status: OrderStatus;
-
-  @Column('enum', {enum: PaymentType, default: PaymentType.None})
-  paymentType: PaymentType;
-
-  @Column('varchar', {length: 40})
-  impPurchaseId: string;
-
-  @OneToOne(type => AddressEntity)
-  address: Address;
-
-  @Column('varchar', {length: 40, nullable: true})
-  packageId: string;
-
-  @OneToMany(type => OrderItemEntity, orderItem => orderItem.order)
-  items: OrderItem[];
-}
+const OrderModel = mongo.model<Order & mongo.TimestampedDocument>('Order', schema);
+export default OrderModel;

@@ -2,17 +2,15 @@ import ProductOption from "./productOption";
 
 export enum ProductType {
   // 배송되는 실물 상품
-  Item,
+  Item = 'item',
   // 배송이 없는 서비스
-  Service 
+  Service = 'service'
 }
 
 /**
  * @description 상품
  */
 export default interface Product {
-  // pk
-  id: number;
   // 상품 형태
   type: ProductType;
   // 상품명

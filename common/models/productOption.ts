@@ -4,10 +4,6 @@ import Product from "./product";
  * @description 상품 옵션
  */
 export default interface ProductOption {
-  // pk
-  id: number;
-  // 상품
-  product: Product;
   // 옵션명
   name: string;
   // 원래 가격 (표시 용도)

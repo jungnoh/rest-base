@@ -1,27 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import Comment from "../../../common/models/comment";
-import PostEntity from "./post";
-import Post from "../../../common/models/post";
-import UserEntity from "./user";
-import { User } from "../../../common/models";
+import mongo from "mongoose";
+import { ObjectId } from "bson";
 
-@Entity()
-export default class CommentEntity implements Comment {
-  @PrimaryGeneratedColumn()
-  id: number;
+const schema = new mongo.Schema<Comment>({
+  author: {required: true, type: ObjectId, ref: 'User'},
+  content: {required: true, type: String},
+  rating: {default: 0, required: true, type: Number}
+}, {timestamps: true});
 
-  @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP', nullable: false})
-  createdAt: Date;
-
-  @ManyToOne(type => PostEntity, post => post.comments)
-  post: Post;
-
-  @ManyToOne(type => UserEntity)
-  author: User;
-
-  @Column('mediumtext')
-  content: string;
-
-  @Column('tinyint', {unsigned: true})
-  rating: number;
-}
+const CommentModel = mongo.model<Comment & mongo.TimestampedDocument>('Comment', schema);
+export default CommentModel;

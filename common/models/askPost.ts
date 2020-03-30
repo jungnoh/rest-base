@@ -4,8 +4,6 @@ import { User } from ".";
  * @description 1:1 문의 게시물 모델
  */
 export default interface AskPost {
-  // pk
-  id: number;
   // 작성자
   author: User;
   // 생성일시

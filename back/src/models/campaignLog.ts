@@ -1,26 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import CampaignLog from "../../../common/models/campaignLog";
+import mongo from "mongoose";
 
-@Entity()
-export default class CampaignLogEntity implements CampaignLog {
-  @PrimaryGeneratedColumn()
-  id: number;
+const schema = new mongo.Schema<CampaignLog>({
+  type: {required: true, type: String},
+  method: {required: true, type: String},
+  searchTerm: {required: false, type: String},
+  ip: {required: true, type: String},
+  country: {required: false, type: String},
+  region: {required: false, type: String},
+}, {timestamps: true});
 
-  @Column('varchar', {length: 20})
-  type: string;
-
-  @Column('varchar', {length: 80})
-  method: string;
-
-  @Column('varchar', {nullable: true})
-  searchTerm?: string;
-
-  @Column('varchar', {length: 40})
-  ip: string;
-
-  @Column('varchar', {length: 40, nullable: true})
-  country?: string;
-
-  @Column('varchar', {length: 40, nullable: true})
-  region?: string;
-}
+const CampaignLogModel = mongo.model<CampaignLog & mongo.TimestampedDocument>('CampaignLog', schema);
+export default CampaignLogModel;
