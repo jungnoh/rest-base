@@ -1,5 +1,5 @@
 import MongoStore from 'connect-mongo';
-import express from 'express';
+import express, { Request } from 'express';
 import expressSession from 'express-session';
 import helmet from 'helmet';
 import mongoose from 'mongoose';
@@ -9,6 +9,7 @@ import router from './routes';
 import {handleError} from './middlewares/error';
 import passport from 'passport';
 import * as PassportStrategy from './util/passport';
+import meta from 'req-meta-middleware';
 
 async function setup(isDev: boolean) {
   if (isDev) {
@@ -55,6 +56,7 @@ export default async function createApp(isDev = false) {
   }));
 
   app.use(helmet());
+
   // app.use(morgan('dev'));
   // Parsers
   app.use(express.json());

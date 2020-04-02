@@ -1,6 +1,5 @@
 import { InboundLog } from "../../../common/models";
 import mongo from "mongoose";
-import { ObjectId } from "bson";
 
 const schema = new mongo.Schema<InboundLog>({
   date: {required: true, type: Date},
