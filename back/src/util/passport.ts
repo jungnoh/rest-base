@@ -15,7 +15,7 @@ export const localStrategy = new LocalStrategy({
   try {
     const result = await AuthService.authenticate(username, password);
     if (result.success) {
-      return done(null, result.result!)
+      return done(null, result.result!);
     } else {
       return done(result.reason);
     }

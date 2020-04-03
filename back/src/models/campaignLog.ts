@@ -1,5 +1,5 @@
-import CampaignLog from "../../../common/models/campaignLog";
-import mongo from "mongoose";
+import CampaignLog from '../../../common/models/campaignLog';
+import mongo from 'mongoose';
 
 const schema = new mongo.Schema<CampaignLog>({
   type: {required: true, type: String},

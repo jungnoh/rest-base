@@ -1,6 +1,6 @@
-import { Order } from "../../../common/models";
-import mongo from "mongoose";
-import { ObjectId } from "bson";
+import { Order } from '../../../common/models';
+import mongo from 'mongoose';
+import { ObjectId } from 'bson';
 
 const schema = new mongo.Schema<Order>({
   paymentAt: {default: null, required: false, type: Date},

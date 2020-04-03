@@ -1,5 +1,5 @@
-import mongo from "mongoose";
-import { ObjectId } from "bson";
+import mongo from 'mongoose';
+import { ObjectId } from 'bson';
 import { Post } from '../../../common/models';
 
 const schema = new mongo.Schema<Post>({

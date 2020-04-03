@@ -1,6 +1,6 @@
-import { AskPost, User } from "../../../common/models";
-import mongo from "mongoose";
-import { ObjectId } from "bson";
+import { AskPost, User } from '../../../common/models';
+import mongo from 'mongoose';
+import { ObjectId } from 'bson';
 
 const schema = new mongo.Schema<AskPost>({
   author: {ref: 'User', required: true, type: ObjectId},

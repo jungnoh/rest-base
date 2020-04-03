@@ -7,9 +7,9 @@ import "core-js/stable/date";
 import "core-js/stable/string";
 import React from 'react';
 import App from 'next/app';
-import axios from 'axios';
 import Head from 'next/head';
 import 'react-quill/dist/quill.snow.css';
+import 'normalize.css';
 
 class MyApp extends App {
   render() {

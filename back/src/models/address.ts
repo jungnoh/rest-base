@@ -1,4 +1,4 @@
-import { Address } from "../../../common/models";
+import { Address } from '../../../common/models';
 import mongo from 'mongoose';
 
 const schema = new mongo.Schema<Address>({

@@ -25,7 +25,7 @@ export function rejectValFail(req: Request, res: Response, next: NextFunction) {
     // Filter duplicates
     const errorReasons = errors.array().filter((item) => {
       const itemKey = `${item.location}#${item.param}`;
-      return elSeen.hasOwnProperty(itemKey) ? false: (elSeen[itemKey] = true);
+      return Object.prototype.hasOwnProperty.call(elSeen, itemKey) ? false: (elSeen[itemKey] = true);
     }).map(x => ({param: x.param, location: x.location}));
     res.status(400).json({
       reason: errorReasons,

@@ -7,31 +7,23 @@ const cache: {[key: string]: string} = {};
  * @param key 키 값
  */
 export async function get(key: string): Promise<string | null> {
-  try {
-    if (!cache[key]) {
-      const entry = (await ConfigModel.findOne({key}));
-      if (!entry) return null;
-      cache[key] = entry.value;
-    }
-    return cache[key];
-  } catch (err) {
-    throw err;
+  if (!cache[key]) {
+    const entry = (await ConfigModel.findOne({key}));
+    if (!entry) return null;
+    cache[key] = entry.value;
   }
+  return cache[key];
 }
 
 /**
  * @description 모든 설정값을 가져옵니다. 이 경우는 캐시를 사용하지 않습니다.
  */
 export async function getAll(): Promise<Config[]> {
-  try {
-    const ret = await ConfigModel.find({});
-    for (const item of ret) {
-      cache[item.key] = item.value;
-    }
-    return ret;
-  } catch (err) {
-    throw err;
+  const ret = await ConfigModel.find({});
+  for (const item of ret) {
+    cache[item.key] = item.value;
   }
+  return ret;
 }
 
 /**
@@ -40,13 +32,9 @@ export async function getAll(): Promise<Config[]> {
  * @param value 저장할 걊
  */
 export async function set(...items: {key: string; value: string}[]) {
-  try {
-    for (const item of items) {
-      const {key, value} = item;
-      cache[key] = value;
-      await ConfigModel.findOneAndUpdate({key}, {key, value}, {upsert: true});
-    }
-  } catch (err) {
-    throw err;
+  for (const item of items) {
+    const {key, value} = item;
+    cache[key] = value;
+    await ConfigModel.findOneAndUpdate({key}, {key, value}, {upsert: true});
   }
 }

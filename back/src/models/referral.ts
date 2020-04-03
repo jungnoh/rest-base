@@ -1,6 +1,6 @@
-import { Referral } from "../../../common/models";
-import mongo from "mongoose";
-import { ObjectId } from "bson";
+import { Referral } from '../../../common/models';
+import mongo from 'mongoose';
+import { ObjectId } from 'bson';
 
 const schema = new mongo.Schema<Referral>({
   hashId: {required: true, type: String},

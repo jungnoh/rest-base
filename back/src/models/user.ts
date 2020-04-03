@@ -1,6 +1,6 @@
 import { User } from '../../../common/models';
-import mongo from "mongoose";
-import { ObjectId } from "bson";
+import mongo from 'mongoose';
+import { ObjectId } from 'bson';
 
 const schema = new mongo.Schema<User>({
   allowSMS: {default: true, required: true, type: Boolean},

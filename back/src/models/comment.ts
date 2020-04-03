@@ -1,6 +1,6 @@
-import Comment from "../../../common/models/comment";
-import mongo from "mongoose";
-import { ObjectId } from "bson";
+import Comment from '../../../common/models/comment';
+import mongo from 'mongoose';
+import { ObjectId } from 'bson';
 
 const schema = new mongo.Schema<Comment>({
   author: {required: true, type: ObjectId, ref: 'User'},

@@ -1,6 +1,6 @@
-import { Product } from "../../../common/models";
-import mongo from "mongoose";
-import { ObjectId } from "bson";
+import { Product } from '../../../common/models';
+import mongo from 'mongoose';
+import { ObjectId } from 'bson';
 
 const schema = new mongo.Schema<Product>({
   type: {enum: ['item', 'service'], required: true, type: String},

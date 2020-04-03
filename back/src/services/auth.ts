@@ -1,11 +1,11 @@
 // 사용자 모델 중 인증 및 인증 관리를 위한 서비스입니다. (사용자 관리는 포함되지 않음)
 
-import AddressModel from "../models/address";
-import UserModel from "../models/user";
-import * as Password from "../util/password";
-import User, { UserSignup } from "../../../common/models/user";
-import lodash from "lodash";
-import { ServiceResult } from "src/util/types";
+import AddressModel from '../models/address';
+import UserModel from '../models/user';
+import * as Password from '../util/password';
+import User, { UserSignup } from '../../../common/models/user';
+import lodash from 'lodash';
+import { ServiceResult } from 'src/util/types';
 
 export const USER_CHANGEABLE_FIELDS = [
   'allowSNS', 'allowPush', 'address', 'phone', 'email', 'password'
@@ -18,33 +18,29 @@ export const USER_CHANGEABLE_FIELDS = [
  */
 export async function authenticate(username: string, password: string):
 ServiceResult<'BAD_CREDENTIALS' | 'INACTIVE', User> {
-  try {
-    const user = await UserModel.findOne({username});
-    if (!user) {
-      return {
-        success: false,
-        reason: 'BAD_CREDENTIALS'
-      };
-    }
-    if (!(await Password.verify(user.password, password))) {
-      return {
-        success: false,
-        reason: 'BAD_CREDENTIALS'
-      };
-    }
-    if (!user.active) {
-      return {
-        success: false,
-        reason: 'INACTIVE'
-      };
-    }
+  const user = await UserModel.findOne({username});
+  if (!user) {
     return {
-      success: true,
-      result: user
+      success: false,
+      reason: 'BAD_CREDENTIALS'
     };
-  } catch (err) {
-    throw err;
   }
+  if (!(await Password.verify(user.password, password))) {
+    return {
+      success: false,
+      reason: 'BAD_CREDENTIALS'
+    };
+  }
+  if (!user.active) {
+    return {
+      success: false,
+      reason: 'INACTIVE'
+    };
+  }
+  return {
+    success: true,
+    result: user
+  };
 }
 
 /**
@@ -53,45 +49,41 @@ ServiceResult<'BAD_CREDENTIALS' | 'INACTIVE', User> {
  */
 export async function create(profile: UserSignup):
 ServiceResult<'USERNAME_EXISTS' | 'EMAIL_EXISTS' | 'IMPKEY_EXISTS', User> {
-  try {
-    // 이메일, 사용자명이 존재하는지 체크
-    const existingUser = await UserModel.findOne({$or: [
-      {username: profile.username},
-      {email: profile.email},
-      {impIdentityKey: profile.impIdentityKey, phone: profile.phone}
-    ]});
-    if (existingUser !== null) {
-      if (existingUser.username === profile.username) {
-        return {
-          success: false,
-          reason: 'USERNAME_EXISTS'
-        };
-      } else if (existingUser.email === profile.email) {
-        return {
-          success: false,
-          reason: 'EMAIL_EXISTS'
-        };
-      } else {
-        return {
-          success: false,
-          reason: 'IMPKEY_EXISTS'
-        };
-      }
+  // 이메일, 사용자명이 존재하는지 체크
+  const existingUser = await UserModel.findOne({$or: [
+    {username: profile.username},
+    {email: profile.email},
+    {impIdentityKey: profile.impIdentityKey, phone: profile.phone}
+  ]});
+  if (existingUser !== null) {
+    if (existingUser.username === profile.username) {
+      return {
+        success: false,
+        reason: 'USERNAME_EXISTS'
+      };
+    } else if (existingUser.email === profile.email) {
+      return {
+        success: false,
+        reason: 'EMAIL_EXISTS'
+      };
+    } else {
+      return {
+        success: false,
+        reason: 'IMPKEY_EXISTS'
+      };
     }
-
-    const addressObj = await AddressModel.create(profile.address);
-
-    const userObj = await UserModel.create(Object.assign(profile, {
-      password: await Password.hash(profile.password),
-      address: addressObj
-    }));
-    return {
-      success: true,
-      result: userObj
-    };
-  } catch (err) {
-    throw err;
   }
+
+  const addressObj = await AddressModel.create(profile.address);
+
+  const userObj = await UserModel.create(Object.assign(profile, {
+    password: await Password.hash(profile.password),
+    address: addressObj
+  }));
+  return {
+    success: true,
+    result: userObj
+  };
 }
 
 /**
@@ -102,24 +94,20 @@ ServiceResult<'USERNAME_EXISTS' | 'EMAIL_EXISTS' | 'IMPKEY_EXISTS', User> {
  */
 export async function update(username: string, change: Partial<User>, isAdmin = false):
 ServiceResult<'USER_NEXIST'> {
-  try {
-    let updates = change;
-    if (!isAdmin) {
-      updates = lodash.pick(change, USER_CHANGEABLE_FIELDS);
-    }
-    let error = null;
-
-    const user = await UserModel.findOne({username});
-    if (!user) {
-      error = 'USER_NEXIST';
-      return {success: false, reason: 'USER_NEXIST'};
-    }
-    Object.assign(user, updates);
-    await user.save();
-    return {success: true};
-  } catch (err) {
-    throw err;
+  let updates = change;
+  if (!isAdmin) {
+    updates = lodash.pick(change, USER_CHANGEABLE_FIELDS);
   }
+  let error = null;
+
+  const user = await UserModel.findOne({username});
+  if (!user) {
+    error = 'USER_NEXIST';
+    return {success: false, reason: 'USER_NEXIST'};
+  }
+  Object.assign(user, updates);
+  await user.save();
+  return {success: true};
 }
 
 /**
@@ -127,13 +115,9 @@ ServiceResult<'USER_NEXIST'> {
  * @param username 사용자명
  */
 export async function view(username: string): ServiceResult<'USER_NEXIST', User> {
-  try {
-    const user = await UserModel.findOne({username});
-    if (!user) {
-      return {success: false, reason: 'USER_NEXIST'};
-    }
-    return {success: true, result: user};
-  } catch (err) {
-    throw err;
+  const user = await UserModel.findOne({username});
+  if (!user) {
+    return {success: false, reason: 'USER_NEXIST'};
   }
+  return {success: true, result: user};
 }

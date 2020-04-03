@@ -1,6 +1,5 @@
-import { Board } from "../../../common/models";
-import mongo from "mongoose";
-import { ObjectId } from "bson";
+import { Board } from '../../../common/models';
+import mongo from 'mongoose';
 
 const schema = new mongo.Schema<Board>({
   key: {required: true, type: String, unique: true},

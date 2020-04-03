@@ -1,5 +1,5 @@
-import { InboundLog } from "../../../common/models";
-import mongo from "mongoose";
+import { InboundLog } from '../../../common/models';
+import mongo from 'mongoose';
 
 const schema = new mongo.Schema<InboundLog>({
   date: {required: true, type: Date},
