@@ -1,6 +1,6 @@
-import { CampaignLog, InboundLog } from "../common/models";
-import mongo from "mongoose";
-import { ParseResult } from "req-meta-middleware/dist/types";
+import { CampaignLog, InboundLog } from '../common/models';
+import mongo from 'mongoose';
+import { ParseResult } from 'req-meta-middleware/dist/types';
 
 const inboundSchema = new mongo.Schema<InboundLog>({
   date: {required: true, type: Date},
