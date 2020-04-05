@@ -1,5 +1,5 @@
-import * as ConfigService from '../services/config';
-import * as SuperuserService from '../services/superuser';
+import * as ConfigService from '../services/core/config';
+import * as SuperuserService from '../services/core/superuser';
 import { Request, Response, NextFunction } from 'express';
 
 export async function git(_: Request, res: Response, next: NextFunction) {

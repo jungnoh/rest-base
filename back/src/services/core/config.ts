@@ -1,4 +1,4 @@
-import { Config, ConfigModel } from '../models/config';
+import { Config, ConfigModel } from '../../models/config';
 
 const cache: {[key: string]: string} = {};
 
