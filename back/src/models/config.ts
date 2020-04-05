@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 export interface Config {
   key: string;
   value: string;
+  createdAt: Date;
 }
 
 const schema = new mongoose.Schema({

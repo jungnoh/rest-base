@@ -13,7 +13,7 @@ export async function gitInfo(): Promise<gitCommit.Commit> {
 }
 
 export async function allConfig() {
-  return await ConfigService.getAll();
+  return (await ConfigService.getAll()).map(x => ({key: x.key, value: x.value, createdAt: x.createdAt}));
 }
 
 

@@ -9,7 +9,7 @@ interface Err extends Error {
 }
 
 export function handleError(err: Err, _: Request, res: Response, __: NextFunction) {
-  winston.warn(err);
+  winston.warn(err+'\n'+err.stack);
   const status = err.status ?? 500;
   res.status(status).json({
     success: false

@@ -7,6 +7,7 @@ const cache: {[key: string]: string} = {};
  * @param key 키 값
  */
 export async function get(key: string): Promise<string | null> {
+  key = key.toUpperCase();
   if (!cache[key]) {
     const entry = (await ConfigModel.findOne({key}));
     if (!entry) return null;
@@ -33,8 +34,17 @@ export async function getAll(): Promise<Config[]> {
  */
 export async function set(...items: {key: string; value: string}[]) {
   for (const item of items) {
-    const {key, value} = item;
+    let {key, value} = item;
+    key = key.toUpperCase();
     cache[key] = value;
     await ConfigModel.findOneAndUpdate({key}, {key, value}, {upsert: true});
   }
+}
+
+export async function remove(key: string) {
+  key = key.toUpperCase();
+  if (Object.prototype.hasOwnProperty.call(cache, key)) {
+    delete cache[key];
+  }
+  await ConfigModel.findOneAndDelete({key});
 }
