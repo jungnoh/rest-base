@@ -17,7 +17,8 @@ const schema = new mongo.Schema<User>({
   type: {default: 'member', enum: ['member', 'partner'], required: true, type: String},
   balance: {default: 0, required: true, type: Number},
   landingPage: {default: '{}', required: true, type: String},
-  active: {default: false, required: true, type: Boolean}
+  active: {default: false, required: true, type: Boolean},
+  fcmToken: {required: false, type: String}
 });
 schema.index('username');
 

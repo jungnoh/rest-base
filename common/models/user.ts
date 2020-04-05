@@ -49,4 +49,6 @@ export default interface User extends UserSignup {
   landingPage: string; 
   // 사용자 활성화 여부
   active: boolean;
+  // FCM 토큰
+  fcmToken: string;
 }
