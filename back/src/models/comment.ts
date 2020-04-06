@@ -5,6 +5,7 @@ import { ObjectId } from 'bson';
 const schema = new mongo.Schema<Comment>({
   author: {required: true, type: ObjectId, ref: 'User'},
   content: {required: true, type: String},
+  post: {required: true, type: ObjectId, ref: 'Post'},
   rating: {default: 0, required: true, type: Number}
 }, {timestamps: true});
 

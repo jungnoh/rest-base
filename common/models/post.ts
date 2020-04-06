@@ -1,6 +1,6 @@
-import User from "./user";
+import { ObjectId } from "bson";
 import Board from "./board";
-import Comment from "./comment";
+import User from "./user";
 
 /**
  * @description 게시물 모델
@@ -13,7 +13,7 @@ export default interface Post {
   // 내용
   content: string;
   // 작성자
-  author: User;
+  author: User | ObjectId;
   // 생성시간
   createdAt: Date;
 }

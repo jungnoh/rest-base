@@ -11,5 +11,5 @@ const schema = new mongo.Schema<Post>({
 
 schema.index('board -createdAt');
 
-const PostModel = mongo.model('Post', schema);
+const PostModel = mongo.model<Post & mongo.TimestampedDocument>('Post', schema);
 export default PostModel;

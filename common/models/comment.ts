@@ -1,5 +1,6 @@
 import User from "./user";
 import Post from "./post";
+import { ObjectId } from "bson";
 
 /**
  * @description 댓글 모델
@@ -13,4 +14,6 @@ export default interface Comment {
   content: string;
   // 평점
   rating: number;
+  // 대상 게시물
+  post: ObjectId | Post;
 }
