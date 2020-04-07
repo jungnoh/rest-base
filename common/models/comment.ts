@@ -9,7 +9,7 @@ export default interface Comment {
   // 작성일시
   createdAt: Date;
   // 작성자
-  author: User;
+  author: ObjectId | User;
   // 댓글 내용
   content: string;
   // 평점

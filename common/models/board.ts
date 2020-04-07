@@ -8,4 +8,6 @@ export default interface Board {
   showComments: boolean;
   // 댓글에 평점 표시 여부
   showCommentRatings: boolean;
+  // 관리자 이외 글 작성 권한
+  limitWriteToAdmin: boolean;
 }

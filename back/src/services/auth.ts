@@ -1,11 +1,12 @@
 // 사용자 모델 중 인증 및 인증 관리를 위한 서비스입니다. (사용자 관리는 포함되지 않음)
-
+import { ObjectId } from 'bson';
+import lodash from 'lodash';
 import AddressModel from '../models/address';
-import UserModel from '../models/user';
+import UserModel, { UserDoc } from '../models/user';
 import * as Password from '../util/password';
 import User, { UserSignup } from '../../../common/models/user';
-import lodash from 'lodash';
-import { ServiceResult } from 'src/util/types';
+import { ServiceResult } from 'util/types';
+import { AdminPermissions } from 'constants';
 
 export const USER_CHANGEABLE_FIELDS = [
   'allowSNS', 'allowPush', 'address', 'phone', 'email', 'password'
@@ -114,10 +115,37 @@ ServiceResult<'USER_NEXIST'> {
  * @description 사용자 정보를 반환합니다.
  * @param username 사용자명
  */
-export async function view(username: string): ServiceResult<'USER_NEXIST', User> {
+export async function view(username: string):
+ServiceResult<'USER_NEXIST', UserDoc> {
   const user = await UserModel.findOne({username});
   if (!user) {
     return {success: false, reason: 'USER_NEXIST'};
   }
   return {success: true, result: user};
+}
+
+/**
+ * 
+ * @param user 사용자명 또는 _id
+ * @param perm 체크할 관리자 권한 enum
+ */
+export async function checkAdminPerm(user: string | ObjectId, ...perm: AdminPermissions[]):
+ServiceResult<'USER_NEXIST', boolean> {
+  let userObj: UserDoc | null;
+  if (typeof user === 'string') {
+    const userResp = await view(user);
+    if (!userResp.success) {
+      return {success: false, reason: userResp.reason};
+    }
+    userObj = userResp.result ?? null;
+  } else {
+    userObj = await UserModel.findById(user);
+  }
+  if (!userObj) {
+    return {success: false, reason: 'USER_NEXIST'};
+  }
+  return {
+    result: (perm.reduce((pv, cv) => pv | cv, 0) & userObj.adminLevel) !== 0,
+    success: true
+  };
 }

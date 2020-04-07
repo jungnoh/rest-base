@@ -7,7 +7,7 @@ import User from "./user";
  */
 export default interface Post {
   // 게시판
-  board: Board;
+  board: Board | ObjectId;
   // 제목
   title: string;
   // 내용
@@ -16,4 +16,6 @@ export default interface Post {
   author: User | ObjectId;
   // 생성시간
   createdAt: Date;
+  // 조회수
+  view: number;
 }

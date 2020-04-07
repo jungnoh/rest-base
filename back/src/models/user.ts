@@ -22,5 +22,6 @@ const schema = new mongo.Schema<User>({
 });
 schema.index('username');
 
-const UserModel = mongo.model<User & mongo.TimestampedDocument>('User', schema);
+export type UserDoc = User & mongo.TimestampedDocument;
+const UserModel = mongo.model<UserDoc>('User', schema);
 export default UserModel;
