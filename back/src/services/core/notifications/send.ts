@@ -3,12 +3,11 @@
  */
 import axios from 'axios';
 import * as firebase from 'firebase-admin';
-import moment from 'moment';
 import qs from 'querystring';
 import winston from 'winston';
 import { ObjectID } from 'bson';
 import { NotiPayload } from './types';
-import { PushModel } from '../../../models/push';
+import { PushModel } from 'models/push';
 import * as ConfigService from '../config';
 import * as LogService from '../log';
 import * as Config from './config';

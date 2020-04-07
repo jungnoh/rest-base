@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import * as AuthService from '../services/auth';
+import * as AuthService from 'services/auth';
 import passport from 'passport';
 import winston from 'winston';
 

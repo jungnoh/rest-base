@@ -1,4 +1,4 @@
-import {LogModel, Log} from '../../models/log';
+import {LogModel, Log} from 'models/log';
 
 const LOGS_PER_PAGE = 50;
 

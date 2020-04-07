@@ -1,8 +1,8 @@
 import express from 'express';
-import { checkAuthenticated } from '../middlewares/auth';
+import { checkAuthenticated } from 'middlewares/auth';
 import { body } from 'express-validator';
-import { rejectValFail } from '../middlewares/error';
-import * as AskPostController from '../controllers/askPost';
+import { rejectValFail } from 'middlewares/error';
+import * as AskPostController from 'controllers/askPost';
 
 const router = express.Router();
 

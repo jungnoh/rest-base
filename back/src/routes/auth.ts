@@ -1,7 +1,7 @@
 import express from 'express';
-import { userSignupVal, addressVal } from '../util/validators';
-import { rejectValFail } from '../middlewares/error';
-import * as AuthController from '../controllers/auth';
+import { userSignupVal, addressVal } from 'util/validators';
+import { rejectValFail } from 'middlewares/error';
+import * as AuthController from 'controllers/auth';
 import { body } from 'express-validator';
 
 const router = express.Router();

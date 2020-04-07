@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {Strategy as LocalStrategy} from 'passport-local';
-import UserEntity from '../models/user';
-import * as AuthService from '../services/auth';
+import * as AuthService from 'services/auth';
 import { User } from '../../../common/models';
 
 /**

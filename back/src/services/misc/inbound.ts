@@ -1,6 +1,6 @@
 import moment from 'moment';
-import CampaignLogModel from '../../models/campaignLog';
-import { DOCS_PER_PAGE } from '../../constants';
+import CampaignLogModel from 'models/campaignLog';
+import { DOCS_PER_PAGE } from 'constant';
 
 /**
  * @description 유입 접속 로그를 가져옵니다.

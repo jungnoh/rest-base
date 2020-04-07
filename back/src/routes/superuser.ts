@@ -1,7 +1,7 @@
 import express from 'express';
-import * as Controller from '../controllers/superuser';
+import * as Controller from 'controllers/superuser';
 import { body, param } from 'express-validator';
-import { rejectValFail } from '../middlewares/error';
+import { rejectValFail } from 'middlewares/error';
 
 const router = express.Router();
 // router.use(checkSuperuser);

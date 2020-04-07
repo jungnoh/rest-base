@@ -5,10 +5,10 @@ import helmet from 'helmet';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import winston from 'winston';
-import router from './routes';
-import {handleError} from './middlewares/error';
+import router from 'routes';
+import {handleError} from 'middlewares/error';
 import passport from 'passport';
-import * as PassportStrategy from './util/passport';
+import * as PassportStrategy from 'util/passport';
 
 async function setup(isDev: boolean) {
   if (isDev) {
