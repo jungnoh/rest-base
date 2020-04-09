@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development ts-node-dev --watch ./src www.ts",
-    "prod": "cross-env NODE_ENV=production ts-node --files www.ts --project tsconfig.json"
+    "dev": "cross-env NODE_ENV=development ts-node-dev -r tsconfig-paths/register --watch ./src www.ts",
+    "prod": "cross-env NODE_ENV=production ts-node -r tsconfig-paths/register --files www.ts --project tsconfig.json"
   },
   "keywords": [],
   "author": "",

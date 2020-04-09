@@ -45,7 +45,7 @@ ServiceResult<'BOARD_NEXIST', {board?: Board, posts: Post[]}> {
   if (page > 1) {
     query = query.skip(DOCS_PER_PAGE * (page - 1));
   }
-  query = query.sort('-createdAt');
+  query = query.sort('-createdAt').populate('author', 'username name');
   const result = await query.limit(DOCS_PER_PAGE);
   return {
     result: {
@@ -81,7 +81,8 @@ ServiceResult<null, Comment[]> {
  */
 export async function viewPost(id: ObjectId, incrementView = false):
 ServiceResult<'POST_NEXIST', {post: Post, comments: Comment[]}> {
-  const postObj = await (incrementView ? PostModel.findByIdAndUpdate(id, {$inc: {view: 1}}) : PostModel.findById(id));
+  const query = incrementView ? PostModel.findByIdAndUpdate(id, {$inc: {view: 1}}) : PostModel.findById(id);
+  const postObj = await query.populate('author', 'username');
   if (!postObj) {
     return {
       reason: 'POST_NEXIST',
@@ -157,12 +158,18 @@ ServiceResult<'POST_NEXIST'|'USER_PERM', Comment> {
  * @param id 게시물 ObjectId
  * @param title 게시물 제목
  * @param content 게시물 내용
+ * @param user 요청 사용자
  */
-export async function editPost(post: ObjectId, title: string, content: string):
-ServiceResult<'POST_NEXIST', Post> {
+export async function editPost(post: ObjectId, title: string, content: string, user: ObjectId):
+ServiceResult<'POST_NEXIST'|'USER_PERM', Post> {
   const postObj = await PostModel.findById(post);
   if (!postObj) {
     return {reason: 'POST_NEXIST', success: false};
+  }
+  const userHasPerm = (await AuthService.checkAdminPerm(user, AdminPermission.Board)).result ?? false;
+  const hasEditPerm = user.equals(postObj.author as ObjectId) || userHasPerm;
+  if (!hasEditPerm) {
+    return {reason: 'USER_PERM', success: false};
   }
   postObj.title = title;
   postObj.content = content;

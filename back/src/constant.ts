@@ -1,5 +1,7 @@
 export const DOCS_PER_PAGE = 25;
 
 export enum AdminPermission {
-  Board = 2 << 0
+  AdminPage = 1 << 0,
+  Board = 1 << 1,
+  Superuser = 1 << 50
 }

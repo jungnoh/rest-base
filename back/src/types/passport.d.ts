@@ -10,7 +10,7 @@
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.3
 
-import { User as UserModel } from '../../../common/models';
+import { UserDoc as UserModel } from 'models/user';
 import { IncomingMessage } from 'http';
 
 declare global {
@@ -40,6 +40,7 @@ declare global {
 }
 
 import express = require('express');
+import { UserDoc } from 'models/user';
 
 declare namespace passport {
     interface AuthenticateOptions {
