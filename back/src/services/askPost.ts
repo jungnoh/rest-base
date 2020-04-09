@@ -1,6 +1,6 @@
 import AskPostModel from '../models/askPost';
 import UserModel from '../models/user';
-import { ServiceResult } from 'src/util/types';
+import { ServiceResult } from 'util/types';
 import { AskPost } from '../../../common/models';
 
 export async function create(username: string, title: string, content: string):

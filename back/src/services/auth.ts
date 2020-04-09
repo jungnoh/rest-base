@@ -6,7 +6,7 @@ import UserModel, { UserDoc } from '../models/user';
 import * as Password from '../util/password';
 import User, { UserSignup } from '../../../common/models/user';
 import { ServiceResult } from 'util/types';
-import { AdminPermissions } from 'constants';
+import { AdminPermission } from 'constant';
 
 export const USER_CHANGEABLE_FIELDS = [
   'allowSNS', 'allowPush', 'address', 'phone', 'email', 'password'
@@ -129,7 +129,7 @@ ServiceResult<'USER_NEXIST', UserDoc> {
  * @param user 사용자명 또는 _id
  * @param perm 체크할 관리자 권한 enum
  */
-export async function checkAdminPerm(user: string | ObjectId, ...perm: AdminPermissions[]):
+export async function checkAdminPerm(user: string | ObjectId, ...perm: AdminPermission[]):
 ServiceResult<'USER_NEXIST', boolean> {
   let userObj: UserDoc | null;
   if (typeof user === 'string') {
