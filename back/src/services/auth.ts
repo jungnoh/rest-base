@@ -149,3 +149,7 @@ ServiceResult<'USER_NEXIST', boolean> {
     success: true
   };
 }
+
+export async function checkIamKeyExists(uniqueKey: string, phone: string): Promise<boolean> {
+  return await UserModel.exists({iamUniqueKey: uniqueKey, phone});
+}
