@@ -24,24 +24,24 @@ const handle = app.getRequestHandler();
 
 const handleMetaParse = (meta: ParseResult) => {
   writeRecord(meta);
-}
+};
 
 app.prepare()
-.then(() => mongoose.connect(process.env.MONGO_HOST!, mongooseConfig))
-.then(() => reqMeta(handleMetaParse, {internalDomains: DOMAINS}))
-.then((middleware) => {
-  const server = express();
-  if (dev) {
-    server.use(createProxyMiddleware('/api', {
-      target: 'http://localhost:8080',
-      pathRewrite: { '^/api': '/' },
-      changeOrigin: true,
-    }));
-  }
-  server.use(morgan('dev'));
-  server.use(middleware);
-  server.all('*', (req, res) => handle(req, res));
-  server.listen(3000, () => {
-    console.log('> Ready on http://localhost:3000');
+  .then(() => mongoose.connect(process.env.MONGO_HOST!, mongooseConfig))
+  .then(() => reqMeta(handleMetaParse, {internalDomains: DOMAINS}))
+  .then((middleware) => {
+    const server = express();
+    if (dev) {
+      server.use(createProxyMiddleware('/api', {
+        target: 'http://localhost:8080',
+        pathRewrite: { '^/api': '/' },
+        changeOrigin: true,
+      }));
+    }
+    server.use(morgan('dev'));
+    server.use(middleware);
+    server.all('*', (req, res) => handle(req, res));
+    server.listen(3000, () => {
+      console.log('> Ready on http://localhost:3000');
+    });
   });
-});
