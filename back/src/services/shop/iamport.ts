@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import axios from 'axios';
+import { ObjectId } from 'bson';
 import winston from 'winston';
 import * as AuthService from 'services/auth';
 import * as ConfigService from 'services/core/config';
+import * as OrderService from './order';
 
 const CONFIG_IMP_KEY = 'IMP_API_KEY';
 const CONFIG_IMP_SECRET = 'IMP_API_SECRET'; 
@@ -14,6 +16,12 @@ export interface UserAuthInfo {
   name: string;
   // 아임포트 사용자 고유 식별자. https://docs.iamport.kr/tech/mobile-authentication
   uniqueId: string;
+}
+
+export interface PaymentInfo {
+  impUid: string;
+  orderId: ObjectId;
+  valid: boolean;
 }
 
 // Do not use these on its own
@@ -74,3 +82,47 @@ export async function checkCertificate(uid: string, phone: string): Promise<User
   };
 }
 
+/**
+ * @description 아임포트 결제가 올바른지 검증합니다. 저장은 이루어지지 않습니다.
+ * @param impUid 아임포트 결제 승인번호
+ * @param orderId 결제 _id
+ */
+export async function validatePurchase(impUid: string, orderId: ObjectId): Promise<PaymentInfo> {
+  const orderObj = await OrderService.find(orderId);
+  if (!orderObj.success) {
+    return {
+      valid: false,
+      impUid,
+      orderId
+    };
+  }
+  const iamToken = await getToken();
+  const resp = await axios.get(
+    `https://api.iamport.kr/payments/${impUid}`,
+    {
+      headers: { 'Authorization': iamToken },
+      validateStatus: (n) => (n === 200 || n === 404)
+    }
+  );
+  if (resp.status === 404) {
+    return {
+      valid: false,
+      impUid,
+      orderId
+    };
+  }
+  const paymentInfo = resp.data.response;
+  const { amount, status } = paymentInfo;
+  if (amount !== orderObj.result!.totalAmount) {
+    return {
+      valid: false,
+      impUid,
+      orderId
+    };
+  }
+  return {
+    valid: true,
+    impUid,
+    orderId
+  };
+}
