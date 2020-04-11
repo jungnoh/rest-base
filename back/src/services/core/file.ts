@@ -8,6 +8,12 @@ import {v1 as uuidV1} from 'uuid';
 import { ServiceResult } from 'util/types';
 
 const UPLOAD_DIR = __dirname + '../../../../../upload';
+
+export async function init(): Promise<string[]> {
+  await fs.ensureDir(UPLOAD_DIR);
+  return [];
+}
+
 function localFilePath(key: string) {
   return path.join(UPLOAD_DIR, key);
 }

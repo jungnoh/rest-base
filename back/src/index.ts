@@ -9,6 +9,7 @@ import router from 'routes';
 import {handleError} from 'middlewares/error';
 import passport from 'passport';
 import * as PassportStrategy from 'util/passport';
+import { init as initServices } from 'services';
 
 async function setup(isDev: boolean) {
   if (isDev) {
@@ -30,6 +31,7 @@ async function setup(isDev: boolean) {
   };
   await mongoose.connect(process.env.MONGO_HOST, mongooseConfig);
   winston.info('Connected to mongodb');
+  await initServices();
 }
 
 export default async function createApp(isDev = false) {

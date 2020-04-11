@@ -4,14 +4,16 @@ import winston from 'winston';
 import * as ConfigService from '../config';
 import * as Send from './send';
 import { NotiDescription } from './types';
+import * as ConfigKeys from './config';
 
-export async function init() {
-  console.log('Firebase: Initializing');
+export async function init(): Promise<string[]> {
+  winston.verbose('Firebase: Initializing');
   firebase.initializeApp({
     credential: firebase.credential.applicationDefault(),
     databaseURL: `https://${process.env.FCM_DB}.firebaseio.com`
   });
-  console.log('Firebase: Init complete');
+  winston.verbose('Firebase: Init complete');
+  return Object.values(ConfigKeys);
 }
 
 /**
