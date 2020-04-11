@@ -1,6 +1,6 @@
 import User from "./user";
 import Address from "./address";
-import { OrderItem } from "./orderItem";
+import OrderItem from "./orderItem";
 
 export enum OrderStatus {
   PendingPayment = 'pending_payment',

@@ -20,5 +20,8 @@ router.post('/mongo',
   rejectValFail,
   Controller.mongo
 );
+router.get('/imp/purchase/:id', [
+  param('id').exists()
+], rejectValFail, Controller.impPurchaseQuery);
 
 export default router;

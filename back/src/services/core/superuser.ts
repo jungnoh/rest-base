@@ -16,7 +16,6 @@ export async function allConfig() {
   return (await ConfigService.getAll()).map(x => ({key: x.key, value: x.value, createdAt: x.createdAt}));
 }
 
-
 export async function mongo(command: string) {
   return await mongoose.connection.db.command(JSON.parse(command));
 }

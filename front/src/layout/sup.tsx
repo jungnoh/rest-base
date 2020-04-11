@@ -9,8 +9,9 @@ const menuItems: {url: string; name: string}[] = [
   {url: '/admin', name: 'leave'},
   {url: '/admin/sup', name: 'config'},
   {url: '/admin/sup/mongo', name: 'mongo'},
-  {url: '/admin/sup/git', name: 'git head'}
-]
+  {url: '/admin/sup/git', name: 'git head'},
+  {url: '/admin/sup/imp-purchase', name: 'imp (purchase)'}
+];
 
 export default function SupLayout(props: IndexProps) {
   return (
@@ -23,7 +24,7 @@ export default function SupLayout(props: IndexProps) {
           Superuser Tools
         </SupLogo>
         <SidebarItems>
-          {menuItems.map(x => (<a href={x.url}>{x.name}</a>))}
+          {menuItems.map(x => (<a href={x.url} key={x.name}>{x.name}</a>))}
         </SidebarItems>
       </SideBar>
       <Content>

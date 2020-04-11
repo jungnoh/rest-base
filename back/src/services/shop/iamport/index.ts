@@ -4,7 +4,11 @@ import { ObjectId } from 'bson';
 import winston from 'winston';
 import * as AuthService from 'services/auth';
 import * as ConfigService from 'services/core/config';
-import * as OrderService from './order';
+import * as OrderService from '../order';
+import { ServiceResult } from 'util/types';
+import OrderModel from 'models/order';
+import parsePayment from './parse';
+import Payment from 'types/payment';
 
 const CONFIG_IMP_KEY = 'IMP_API_KEY';
 const CONFIG_IMP_SECRET = 'IMP_API_SECRET'; 
@@ -125,4 +129,52 @@ export async function validatePurchase(impUid: string, orderId: ObjectId): Promi
     impUid,
     orderId
   };
+}
+
+
+export async function getImpPurchase(impUid: string): Promise<Payment | undefined> {
+  const iamToken = await getToken();
+  const resp = await axios.get(
+    `https://api.iamport.kr/payments/${impUid}`,
+    {
+      headers: { 'Authorization': iamToken },
+      validateStatus: (n) => (n === 200 || n === 404)
+    }
+  );
+  if (resp.status === 404) {
+    return undefined;
+  }
+  return parsePayment(resp.data.response);
+}
+
+async function getOrder(key: string) {
+  let merchantKey: ObjectId;
+  try {
+    merchantKey = new ObjectId(key);
+  } catch {
+    return null;
+  }
+  return await OrderModel.findById(merchantKey);
+}
+
+export async function updatePayment(impUid: string, merchantUid: string):
+ServiceResult<'IMP_INVALID'|'ID_INVALID'> {
+  const orderObj = await getOrder(merchantUid);
+  if (!orderObj) {
+    return {
+      reason: 'ID_INVALID',
+      success: false
+    };
+  }
+  const impPurchase = await getImpPurchase(impUid);
+  if (!impPurchase) {
+    return {
+      reason: 'IMP_INVALID',
+      success: false
+    };
+  }
+  
+
+
+  return {success: true};
 }
