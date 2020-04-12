@@ -11,6 +11,11 @@ router.post('/write', checkAuthenticated, [
   body('content').exists().notEmpty()
 ], rejectValFail, AskPostController.write);
 
+router.put('/reply/:id', checkAuthenticated, [
+  param('id').isMongoId().bail(),
+  body('content').exists().notEmpty()
+], rejectValFail, AskPostController.reply);
+
 router.get('/ask/:id', checkAuthenticated, [
   param('id').isMongoId()
 ], rejectValFail, AskPostController.view);

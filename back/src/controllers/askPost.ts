@@ -16,6 +16,29 @@ export async function write(req: Request, res: Response, next: NextFunction) {
 }
 
 /**
+ * @description Controller for `POST /ask/reply`
+ */
+export async function reply(req: Request, res: Response, next: NextFunction) {
+  try {
+    if (req.user!.adminLevel === 0) {
+      res.status(403).json({ reason: 'FORBIDDEN' });
+    } else {
+      const result = await AskPostService.reply(
+        new ObjectId(req.params.id),
+        req.user!._id,
+        req.body.content
+      );
+      if (!result.success) {
+        res.status(400).json({ reason: result.reason });
+      }
+      else res.status(200).json({ success: true });
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
  * @description Controller for `GET /ask/:id`
  */
 export async function view(req: Request, res: Response, next: NextFunction) {
@@ -26,7 +49,7 @@ export async function view(req: Request, res: Response, next: NextFunction) {
     } else {
       const post = result.result!;
       if (!(post.author as ObjectId).equals(req.user!._id) && (req.user!.adminLevel === 0)) {
-        res.status(404).json({ reason: 'FORBIDDEN' });
+        res.status(403).json({ reason: 'FORBIDDEN' });
         return;
       }
       res.json({ post });

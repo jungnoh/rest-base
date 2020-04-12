@@ -25,6 +25,28 @@ export async function create(username: string, title: string, content: string):
 }
 
 /**
+ * @description 1:1 문의의 작성을 답변합니다.
+ * @param id 답변 대상의 ObjectId
+ * @param author 작성자의 ObjectId
+ * @param content 작성 내용
+ */
+export async function reply(id: ObjectId, author: ObjectId, content: string):
+  ServiceResult<'POST_NEXIST'> {
+  const post = await AskPostModel.findById(id).populate('author');
+  if (!post) {
+    return {
+      success: false,
+      reason: 'POST_NEXIST'
+    };
+  }
+  post.answered = true;
+  post.answerContent = content;
+  post.answeredAt = new Date();
+  await post.save();
+  return { success: true };
+}
+
+/**
  * @description 문서를 가져옵니다.
  * @param id 문서의 ObjectId
  */
