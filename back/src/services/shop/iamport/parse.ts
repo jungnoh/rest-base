@@ -1,4 +1,4 @@
-import Payment, { PaymentDesc, PendingDesc } from 'types/payment';
+import Payment, { PaymentDesc, PendingDesc } from '@common/types/payment';
 
 function paymentDesc(resp: any): PaymentDesc {
   const payMethod = resp.pay_method as 'samsung' | 'card' | 'trans' | 'vbank';

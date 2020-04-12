@@ -4,11 +4,9 @@ import { ObjectId } from 'bson';
 import winston from 'winston';
 import * as AuthService from 'services/auth';
 import * as ConfigService from 'services/core/config';
-import * as OrderService from '../order';
 import { ServiceResult } from 'util/types';
-import OrderModel from 'models/order';
 import parsePayment from './parse';
-import Payment from 'types/payment';
+import Payment from '@common/types/payment';
 
 const CONFIG_IMP_KEY = 'IMP_API_KEY';
 const CONFIG_IMP_SECRET = 'IMP_API_SECRET'; 
@@ -87,51 +85,9 @@ export async function checkCertificate(uid: string, phone: string): Promise<User
 }
 
 /**
- * @description 아임포트 결제가 올바른지 검증합니다. 저장은 이루어지지 않습니다.
- * @param impUid 아임포트 결제 승인번호
- * @param orderId 결제 _id
+ * @description 아임포트 결제 정보를 가져옵니다.
+ * @param impUid 아임포트 uid
  */
-export async function validatePurchase(impUid: string, orderId: ObjectId): Promise<PaymentInfo> {
-  const orderObj = await OrderService.find(orderId);
-  if (!orderObj.success) {
-    return {
-      valid: false,
-      impUid,
-      orderId
-    };
-  }
-  const iamToken = await getToken();
-  const resp = await axios.get(
-    `https://api.iamport.kr/payments/${impUid}`,
-    {
-      headers: { 'Authorization': iamToken },
-      validateStatus: (n) => (n === 200 || n === 404)
-    }
-  );
-  if (resp.status === 404) {
-    return {
-      valid: false,
-      impUid,
-      orderId
-    };
-  }
-  const paymentInfo = resp.data.response;
-  const { amount, status } = paymentInfo;
-  if (amount !== orderObj.result!.totalAmount) {
-    return {
-      valid: false,
-      impUid,
-      orderId
-    };
-  }
-  return {
-    valid: true,
-    impUid,
-    orderId
-  };
-}
-
-
 export async function getImpPurchase(impUid: string): Promise<Payment | undefined> {
   const iamToken = await getToken();
   const resp = await axios.get(
@@ -147,25 +103,11 @@ export async function getImpPurchase(impUid: string): Promise<Payment | undefine
   return parsePayment(resp.data.response);
 }
 
-async function getOrder(key: string) {
-  let merchantKey: ObjectId;
-  try {
-    merchantKey = new ObjectId(key);
-  } catch {
-    return null;
-  }
-  return await OrderModel.findById(merchantKey);
-}
-
-export async function updatePayment(impUid: string, merchantUid: string):
-ServiceResult<'IMP_INVALID'|'ID_INVALID'> {
-  const orderObj = await getOrder(merchantUid);
-  if (!orderObj) {
-    return {
-      reason: 'ID_INVALID',
-      success: false
-    };
-  }
+/**
+ * @description 결제 금액과 비교해 결제가 완료되었는지 확인합니다.
+ */
+export async function checkPayment(impUid: string, amount: number):
+ServiceResult<'IMP_INVALID', {payment: Payment; purchased: boolean}> {
   const impPurchase = await getImpPurchase(impUid);
   if (!impPurchase) {
     return {
@@ -173,8 +115,12 @@ ServiceResult<'IMP_INVALID'|'ID_INVALID'> {
       success: false
     };
   }
-  
-
-
-  return {success: true};
+  const purchased = impPurchase.status === 'paid' && impPurchase.amount === amount;
+  return {
+    result: {
+      payment: impPurchase,
+      purchased
+    },
+    success: true
+  };
 }

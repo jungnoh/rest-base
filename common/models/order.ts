@@ -1,18 +1,15 @@
 import User from "./user";
 import Address from "./address";
 import OrderItem from "./orderItem";
+import Payment from "../types/payment";
 
 export enum OrderStatus {
+  Init = 'init',
   PendingPayment = 'pending_payment',
+  Payment = 'payment',
   Preparing = 'preparing',
   Sent = 'sent',
   Cancelled = 'cancelled'
-}
-
-export enum PaymentType {
-  Credit = 'credit',
-  Transfer = 'transfer',
-  None = 'none'
 }
 
 /**
@@ -27,10 +24,10 @@ export default interface Order {
   user: User;
   // 주문 상태
   status: OrderStatus;
-  // 결제 수단
-  paymentType: PaymentType;
-  // 아임포트 결제 ID
+  // 아임포트 결제 ID (payment null일 경우를 대비해 중복 기재)
   impPurchaseId?: string;
+  // 결제 세부정보
+  payment?: Payment;
   // 배송 주소지
   address: Address;
   // (택배 발송시) 송장번호

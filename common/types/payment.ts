@@ -24,7 +24,7 @@ interface PaymentBase {
   // 상품명
   name: string | null;
   // 결제금액
-  amount: string; 
+  amount: number; 
   // 결제 화폐단위
   currency: string;
   // 결제수단별 세부 결제정보
