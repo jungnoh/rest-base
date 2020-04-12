@@ -3,6 +3,7 @@ import AskPostModel from '../models/askPost';
 import UserModel from '../models/user';
 import { ServiceResult } from 'util/types';
 import { AskPost } from '../../../common/models';
+import { DOCS_PER_PAGE } from '../constant';
 
 export async function create(username: string, title: string, content: string):
   ServiceResult<'USER_NEXIST', AskPost> {
@@ -21,6 +22,28 @@ export async function create(username: string, title: string, content: string):
   return {
     success: true,
     result: newPost
+  };
+}
+
+/**
+ * @description 문의 목록을 가져옵니다.
+ * @param page 조회할 페이지
+ * @param author 가져올 문의 목록의 작성자
+ */
+export async function list(page: number, author: ObjectId):
+  ServiceResult<undefined, AskPost[]> {
+  const buildQuery = () => {
+    let query = AskPostModel.find({ author });
+    query = query.sort('-createdAt').populate('author', '_id email username');
+    return query;
+  };
+  let query = buildQuery();
+  if (page !== 1) {
+    query = query.skip((page - 1) * DOCS_PER_PAGE);
+  }
+  return {
+    success: true,
+    result: await query.limit(DOCS_PER_PAGE)
   };
 }
 
@@ -47,8 +70,8 @@ export async function reply(id: ObjectId, author: ObjectId, content: string):
 }
 
 /**
- * @description 문서를 가져옵니다.
- * @param id 문서의 ObjectId
+ * @description 문의를 가져옵니다.
+ * @param id 가려올 문의의 ObjectId
  */
 export async function read(id: ObjectId):
   ServiceResult<'POST_NEXIST', AskPost> {

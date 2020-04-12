@@ -1,7 +1,17 @@
 import { ObjectId } from 'bson';
 import * as AskPostService from 'services/askPost';
 import { NextFunction, Request, Response } from 'express';
+import { AskPost } from '../../../common/models';
 
+const itemMutator = (post: AskPost) => ({
+  title: post.title,
+  responded: post.answered,
+  createAt: post.createdAt
+});
+
+/**
+ * @description Controller for `POST /ask/write`
+ */
 export async function write(req: Request, res: Response, next: NextFunction) {
   try {
     const result = await AskPostService.create(req.user!.username, req.body.title, req.body.content);
@@ -16,7 +26,19 @@ export async function write(req: Request, res: Response, next: NextFunction) {
 }
 
 /**
- * @description Controller for `POST /ask/reply`
+ * @description Controller for `GET /ask/list`
+ */
+export async function list(req: Request, res: Response, next: NextFunction) {
+  try {
+    const result = await AskPostService.list(parseInt(req.query.page), req.user!._id);
+    res.status(200).json({ posts: result.result!.map(itemMutator) });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ * @description Controller for `PUT /ask/reply/:id`
  */
 export async function reply(req: Request, res: Response, next: NextFunction) {
   try {
