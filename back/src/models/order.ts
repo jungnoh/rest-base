@@ -28,5 +28,7 @@ const schema = new mongo.Schema<Order>({
 
 schema.index('user -createdAt');
 
-const OrderModel = mongo.model<Order & mongo.TimestampedDocument>('Order', schema);
+export type OrderDoc = Order & mongo.TimestampedDocument;
+
+const OrderModel = mongo.model<OrderDoc>('Order', schema);
 export default OrderModel;

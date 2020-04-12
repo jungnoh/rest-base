@@ -1,3 +1,6 @@
+/**
+ * @description 아임포트 API의 요청을 파싱합니다.
+ */
 import Payment, { PaymentDesc, PendingDesc } from '@common/types/payment';
 
 function paymentDesc(resp: any): PaymentDesc {
