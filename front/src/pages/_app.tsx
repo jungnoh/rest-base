@@ -1,10 +1,10 @@
 import 'react-app-polyfill/ie11';
-import "core-js/stable/array";
-import "core-js/stable/function";
-import "core-js/stable/object";
-import "core-js/stable/number";
-import "core-js/stable/date";
-import "core-js/stable/string";
+import 'core-js/stable/array';
+import 'core-js/stable/function';
+import 'core-js/stable/object';
+import 'core-js/stable/number';
+import 'core-js/stable/date';
+import 'core-js/stable/string';
 import React from 'react';
 import App from 'next/app';
 import Head from 'next/head';
@@ -18,8 +18,8 @@ class MyApp extends App {
     return <>
       <Head>
         <title>{'title'}</title>
-        <script async src={`https://www.googletagmanager.com/gtag/js?id=GA_TAG`}></script>
-        <script dangerouslySetInnerHTML={{__html: `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'GA_TAG');`}} />
+        <script async src={'https://www.googletagmanager.com/gtag/js?id=GA_TAG'}></script>
+        <script dangerouslySetInnerHTML={{__html: 'window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag(\'js\', new Date());gtag(\'config\', \'GA_TAG\');'}} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={'og:url'} />
         <meta property="og:title" content={'og:title'} />  
@@ -40,6 +40,6 @@ MyApp.getInitialProps = async (appContext) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const appProps = await App.getInitialProps(appContext as any);
   return {...appProps};
-}
+};
 
 export default MyApp;
