@@ -14,7 +14,6 @@ import { checkPaymentCompletion } from '../order/payment';
 
 const CONFIG_IMP_KEY = 'IMP_API_KEY';
 const CONFIG_IMP_SECRET = 'IMP_API_SECRET'; 
-const CONFIG_MERCHANT_PREFIX = 'IMP_MERCHANT_PREFIX';
 
 export interface UserAuthInfo {
   // 이전에 본 사이트에 가입된 사용자인지 (`uniqueId`로 판별)
@@ -58,7 +57,7 @@ export async function init(): Promise<string[]> {
     winston.error('imp: Failed to refresh token');
     winston.error(err);
   }
-  return [CONFIG_IMP_KEY, CONFIG_IMP_SECRET, CONFIG_MERCHANT_PREFIX];
+  return [CONFIG_IMP_KEY, CONFIG_IMP_SECRET];
 }
 
 /**
@@ -138,13 +137,13 @@ ServiceResult<'IMP_INVALID', {payment: Payment; paid: boolean}> {
  */
 export async function handleWebhook(impUid: string, merchantUid: string, status: 'ready'|'paid'|'failed'|'cancelled'):
 ServiceResult<'MERCHANT_INVALID'|'ORDER_NEXIST'|'IMP_INVALID'> {
-  const merchantPrefix = ((await ConfigService.get(CONFIG_MERCHANT_PREFIX)) ?? '') + '_';
-  if (!merchantUid.startsWith(merchantPrefix)) {
+  try {
+    new ObjectId(merchantUid);
+  } catch {
     return {reason: 'MERCHANT_INVALID', success: false};
   }
-  const merchantKey = merchantUid.substring(merchantPrefix.length);
   if (status === 'ready' || status === 'paid' || status === 'failed') {
-    const payResult = await checkPaymentCompletion(new ObjectId(merchantKey), impUid);
+    const payResult = await checkPaymentCompletion(new ObjectId(merchantUid), impUid);
     if (!payResult.success) {
       return {reason: payResult.reason, success: false};
     }
