@@ -27,6 +27,7 @@ const schema = new mongo.Schema<Order>({
 });
 
 schema.index('user -createdAt');
+schema.index('-createdAt');
 
 export type OrderDoc = Order & mongo.TimestampedDocument;
 

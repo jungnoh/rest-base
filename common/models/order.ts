@@ -2,6 +2,7 @@ import User from "./user";
 import Address from "./address";
 import OrderItem from "./orderItem";
 import Payment from "../types/payment";
+import { ObjectId } from "bson";
 
 export enum OrderStatus {
   Init = 'init',
@@ -21,7 +22,7 @@ export default interface Order {
   // 결제완료 일시
   paymentAt?: Date;
   // 주문 사용자
-  user: User;
+  user: User | ObjectId;
   // 주문 상태
   status: OrderStatus;
   // 아임포트 결제 ID (payment null일 경우를 대비해 중복 기재)
