@@ -1,11 +1,14 @@
 import { User } from '../../../common/models';
 import mongo from 'mongoose';
-import { ObjectId } from 'bson';
+import addressSchema from './address';
 
 const schema = new mongo.Schema<User>({
   allowSMS: {default: true, required: true, type: Boolean},
   allowPush: {default: true, required: true, type: Boolean},
-  address: {ref: 'Address', required: true, type: ObjectId},
+  address: {
+    required: true,
+    type: addressSchema,
+  },
   email: {required: true, type: String},
   name: {required: true, type: String},
   phone: {required: true, type: String},

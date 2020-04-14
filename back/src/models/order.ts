@@ -1,6 +1,7 @@
 import { Order } from '@common/models';
 import mongo from 'mongoose';
 import { ObjectId } from 'bson';
+import addressSchema from './address';
 
 const schema = new mongo.Schema<Order>({
   paymentAt: {default: null, required: false, type: Date},
@@ -13,9 +14,8 @@ const schema = new mongo.Schema<Order>({
   impPurchaseId: {required: false, type: String},
   payment: {required: false, any: Object},
   address: {
-    ref: 'Address',
     required: true,
-    type: ObjectId
+    type: addressSchema
   },
   packageId: {required: false, type: String},
   items: {

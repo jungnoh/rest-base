@@ -74,12 +74,8 @@ ServiceResult<'USERNAME_EXISTS' | 'EMAIL_EXISTS' | 'IMPKEY_EXISTS', User> {
       };
     }
   }
-
-  const addressObj = await AddressModel.create(profile.address);
-
   const userObj = await UserModel.create(Object.assign(profile, {
     password: await Password.hash(profile.password),
-    address: addressObj
   }));
   return {
     success: true,

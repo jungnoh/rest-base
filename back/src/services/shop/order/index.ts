@@ -3,6 +3,7 @@ import OrderModel, { OrderDoc } from 'models/order';
 import { ServiceResult } from 'util/types';
 import { OrderItem } from '@common/models';
 import { DOCS_PER_PAGE } from 'constant';
+import { SearchOptions } from './types';
 
 /**
  * @description 주문 객체를 가져옵니다.
@@ -10,7 +11,7 @@ import { DOCS_PER_PAGE } from 'constant';
  */
 export async function findById(id: ObjectId):
 ServiceResult<'ORDER_NEXIST', {order: OrderDoc; totalAmount: number}> {
-  const order = await OrderModel.findById(id).populate('address items user');
+  const order = await OrderModel.findById(id).populate('items user');
   if (!order) {
     return {reason: 'ORDER_NEXIST', success: false};
   }
@@ -22,12 +23,6 @@ ServiceResult<'ORDER_NEXIST', {order: OrderDoc; totalAmount: number}> {
     },
     success: true
   };
-}
-
-export interface SearchOptions {
-  user: ObjectId;
-  startTime: Date;
-  endTime: Date;
 }
 
 /**

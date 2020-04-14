@@ -1,13 +1,12 @@
-import { Address } from '../../../common/models';
-import mongo from 'mongoose';
-
-const schema = new mongo.Schema<Address>({
+/**
+ * @description 주소 스키마. 별도 모델을 생성하지 않고 nested document로 이용합니다.
+ */
+const addressSchema = {
   name: {required: true, type: String},
   phone: {required: true, type: String},
   address1: {required: true, type: String},
   address2: {type: String},
   postalCode: {required: true, type: String}
-});
+};
 
-const AddressModel = mongo.model<Address & mongo.Document>('Address', schema);
-export default AddressModel;
+export default addressSchema;
