@@ -1,3 +1,4 @@
+import { ObjectId } from "bson";
 import { User } from ".";
 
 /**
@@ -5,7 +6,7 @@ import { User } from ".";
  */
 export default interface AskPost {
   // 작성자
-  author: User;
+  author: User | ObjectId;
   // 생성일시
   createdAt: Date;
   // 답변일시
