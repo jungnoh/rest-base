@@ -9,7 +9,8 @@ const schema = new mongo.Schema<OrderItem>({
   productName: {required: true, type: String},
   option: {ref: 'Option', required: true, type: ObjectId},
   optionName: {required: true, type: String},
-  referral: {ref: 'Referral', required: false, type: ObjectId}
+  referral: {ref: 'Referral', required: false, type: ObjectId},
+  referralDesc: {required: true, type: String}
 });
 
 const OrderItemModel = mongo.model<OrderItem & mongo.TimestampedDocument>('OrderItem', schema);

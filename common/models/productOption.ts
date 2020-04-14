@@ -1,5 +1,3 @@
-import Product from "./product";
-
 /**
  * @description 상품 옵션
  */

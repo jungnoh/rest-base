@@ -34,5 +34,5 @@ export default interface Order {
   // (택배 발송시) 송장번호
   packageId?: string;
   // 구매 제품
-  items: OrderItem[];
+  items: (OrderItem | ObjectId)[];
 }
