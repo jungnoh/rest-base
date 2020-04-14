@@ -9,30 +9,29 @@ interface PaymentDetailBase {
 
 interface PaymentDescBase {
   // 겔제수단
-  payMethod: 'samsung' | 'card' | 'trans' | 'vbank';
+  payMethod: 'samsung' | 'card' | 'trans' | 'vbank' | 'bank';
   // 결제 디바이스 (pc / mobile)
-  channel: 'pc' | 'mobile';
+  channel: 'pc' | 'mobile' | 'unknown';
   detail: PaymentDetailBase;
 }
 
 interface PaymentBase {
   status: 'ready' | 'paid' | 'cancelled' | 'failed';
-  // 아임포트 결제 고유번호
-  impUid: string;
   // 주문 고유번호
   merchantUid: string;
   // 상품명
   name: string | null;
   // 결제금액
-  amount: number; 
-  // 결제 화폐단위
-  currency: string;
+  amount: number;
   // 결제수단별 세부 결제정보
   desc: PaymentDescBase;
 }
 
+// 신용카드 (or 삼성페이) 결제 세부정보
 interface CardDesc extends PaymentDescBase {
   payMethod: 'samsung' | 'card';
+  // 아임포트 결제 고유번호
+  impUid: string;
   detail: {
     // 카드 승인번호
     applyNum: string;
@@ -51,8 +50,11 @@ interface CardDesc extends PaymentDescBase {
   } & PaymentDetailBase;
 }
 
+// 가상계좌 결제 세부정보
 interface VBankDesc extends PaymentDescBase {
   payMethod: 'vbank';
+  // 아임포트 결제 고유번호
+  impUid: string;
   detail: {
     // 가상계좌 은행 코드
     vBankCode: string;
@@ -71,8 +73,11 @@ interface VBankDesc extends PaymentDescBase {
   } & PaymentDetailBase;
 }
 
+// 실시간 무통장입금 결제 세부정보
 interface TransDesc extends PaymentDescBase {
   payMethod: 'trans';
+  // 아임포트 결제 고유번호
+  impUid: string;
   detail: {
     // 은행코드
     bankCode: string;
@@ -85,8 +90,19 @@ interface TransDesc extends PaymentDescBase {
   } & PaymentDetailBase;
 }
 
-export type PaymentDesc = CardDesc | VBankDesc | TransDesc;
-export type PendingDesc = ({payMethod: 'samsung' | 'card' | 'trans'} & PaymentDescBase) | VBankDesc;
+// 계좌이체 (아임포트 X) 결제 세부정보
+interface BankDesc extends PaymentDescBase {
+  payMethod: 'bank';
+  detail: {
+    // 은행명
+    bankName: string;
+    // 은행 계좌번호
+    bankNum: string;
+  } & PaymentDetailBase;
+}
+
+export type PaymentDesc = BankDesc | CardDesc | VBankDesc | TransDesc | BankDesc;
+export type PendingDesc = ({payMethod: 'samsung' | 'card' | 'trans'} & PaymentDescBase) | VBankDesc | BankDesc;
 
 interface ReadyPayment extends PaymentBase {
   status: 'ready';

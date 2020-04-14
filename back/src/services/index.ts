@@ -1,6 +1,6 @@
 import * as NotiService from './core/notifications';
 import * as FileService from './core/file';
-import * as ImpService from './shop/iamport';
+import * as PayService from './core/iamport';
 import * as SeoService from './misc/seo';
 import * as ConfigService from './core/config';
 import winston from 'winston';
@@ -16,7 +16,7 @@ export async function init() {
   pushKeys('noti', await NotiService.init());
   pushKeys('file', await FileService.init());
   pushKeys('seo', await SeoService.init());
-  pushKeys('imp', await ImpService.init());
+  pushKeys('imp', await PayService.init());
 
   keysRequired.sort((a,b) => (a.key < b.key ? -1 : 1));
   winston.info(`init: Finished loading services, checking ${keysRequired.length} keys..`);

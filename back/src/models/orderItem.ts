@@ -1,4 +1,4 @@
-import { OrderItem } from '../../../common/models';
+import { OrderItem } from '@common/models';
 import mongo from 'mongoose';
 import { ObjectId } from 'bson';
 
@@ -9,9 +9,10 @@ const schema = new mongo.Schema<OrderItem>({
   productName: {required: true, type: String},
   option: {ref: 'Option', required: true, type: ObjectId},
   optionName: {required: true, type: String},
-  referral: {ref: 'Referral', required: false, type: ObjectId},
-  referralDesc: {required: true, type: String}
+  referral: {ref: 'Referral', required: false, type: ObjectId}
 });
 
-const OrderItemModel = mongo.model<OrderItem & mongo.TimestampedDocument>('OrderItem', schema);
+export type OrderItemDoc = OrderItem & mongo.TimestampedDocument;
+
+const OrderItemModel = mongo.model<OrderItemDoc>('OrderItem', schema);
 export default OrderItemModel;

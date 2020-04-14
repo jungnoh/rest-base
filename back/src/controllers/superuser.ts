@@ -1,6 +1,6 @@
 import * as ConfigService from 'services/core/config';
 import * as SuperuserService from 'services/core/superuser';
-import * as ImpService from 'services/shop/iamport';
+import * as ImpService from 'services/core/iamport';
 import { Request, Response, NextFunction } from 'express';
 
 export async function git(_: Request, res: Response, next: NextFunction) {

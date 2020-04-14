@@ -3,17 +3,19 @@
  */
 import { ObjectId } from 'bson';
 import { ServiceResult } from 'util/types';
-import * as IMPService from '../iamport';
+import * as IMPService from '../payment/iamport';
 import { OrderStatus } from '@common/models/order';
 import { findById } from '.';
+import { createBankPayment } from '../payment';
+import OrderModel from 'models/order';
 
 /**
  * @description 주문에 대한 결제가 완료되었는지 확인하고, 주문이 Init 또는 PendingPayment 상태라면 Payment로 상태를 변경합니다.
- * 주문의 payment 정보는 업데이트 합니다.
+ * 주문의 payment 정보는 업데이트 합니다. 주문 상태가 Init인데 결제가 되지 않았다면 PendingPayment로 상태를 변경합니다.
  * @param id 주문의 _id
  * @param impKey 아임포트 키. 주어질 경우 해당 키로 주문의 키를 업데이트하며, 없을 경우 주문에 저장된 키를 사용합니다.
  */
-export async function checkPaymentCompletion(id: ObjectId, impKey?: string):
+export async function checkImpPaymentCompletion(id: ObjectId, impKey?: string):
 ServiceResult<'ORDER_NEXIST'|'IMP_INVALID', {paid: boolean, statusUpdated: boolean}> {
   const orderInfo = await findById(id);
   if (!orderInfo.success) {
@@ -31,12 +33,17 @@ ServiceResult<'ORDER_NEXIST'|'IMP_INVALID', {paid: boolean, statusUpdated: boole
     order.impPurchaseId = impKey;
   }
   const paid = checkResult.result!.paid;
-  const statusUpdated = paid && (order.status === OrderStatus.PendingPayment || order.status === OrderStatus.Payment);
+  let statusUpdated = false;
   if (checkResult.result!.payment) {
     order.payment = checkResult.result!.payment;
   }
-  if (statusUpdated) {
+  if (paid && (order.status === OrderStatus.PendingPayment || order.status === OrderStatus.Init)) {
     order.status = OrderStatus.Payment;
+    statusUpdated = true;
+  }
+  if (!paid && order.status === OrderStatus.Init) {
+    order.status = OrderStatus.PendingPayment;
+    statusUpdated = true;
   }
   await order.save();
   return {result: {paid, statusUpdated}, success: true};
@@ -47,9 +54,29 @@ ServiceResult<'ORDER_NEXIST'|'IMP_INVALID', {paid: boolean, statusUpdated: boole
  */
 export async function setImpPurchaseId(order: ObjectId, impKey: string):
 ServiceResult<'ORDER_NEXIST'|'IMP_INVALID'> {
-  const orderResult = await checkPaymentCompletion(order, impKey);
+  const orderResult = await checkImpPaymentCompletion(order, impKey);
   if (!orderResult.success) {
     return {reason: orderResult.reason, success: false};
   }
   return {success: true};
+}
+
+/**
+ * @description 무통장 입금을 주문에 등록합니다. 주문의 상태 또한 PendingPayment로 변경합니다.
+ */
+export async function setBankPurchase(order: ObjectId, payload: {
+  id: string,
+  amount: number,
+  bankName: string,
+  bankNum: string
+}): ServiceResult<'ORDER_NEXIST'> {
+  const updateInfo = await OrderModel.findOneAndUpdate(order, {
+    payment: await createBankPayment(payload),
+    status: OrderStatus.PendingPayment
+  });
+  if (!updateInfo) {
+    return {reason: 'ORDER_NEXIST', success: false};
+  } else {
+    return {success: true};
+  }
 }

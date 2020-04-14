@@ -21,6 +21,4 @@ export default interface OrderItem {
   optionName: string;
   // 마케팅 리퍼럴 키
   referral?: Referral | ObjectId;
-  // 리퍼럴 설명 (referral 삭제될 때를 대비)
-  referralDesc: string;
 }

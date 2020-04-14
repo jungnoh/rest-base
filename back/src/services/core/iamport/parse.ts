@@ -9,6 +9,7 @@ function paymentDesc(resp: any): PaymentDesc {
   if (payMethod === 'vbank') {
     return {
       payMethod: 'vbank',
+      impUid: resp.imp_uid,
       channel: payChannel,
       detail: {
         vBankCode: resp.vbank_code,
@@ -27,6 +28,7 @@ function paymentDesc(resp: any): PaymentDesc {
   if (payMethod === 'trans') {
     return {
       payMethod: 'trans',
+      impUid: resp.imp_uid,
       channel: payChannel,
       detail: {
         bankCode: resp.bank_code,
@@ -41,6 +43,7 @@ function paymentDesc(resp: any): PaymentDesc {
   }
   return {
     payMethod,
+    impUid: resp.imp_uid,
     channel: payChannel,
     detail: {
       applyNum: resp.apply_num,
@@ -63,6 +66,7 @@ function pendingDesc(resp: any): PendingDesc {
   if (payMethod === 'vbank') {
     return {
       payMethod: 'vbank',
+      impUid: resp.imp_uid,
       channel: payChannel,
       detail: {
         vBankCode: resp.vbank_code,
@@ -94,11 +98,9 @@ function pendingDesc(resp: any): PendingDesc {
 export default function parsePayment(resp: any): (Payment | undefined) {
   const status = resp.status as 'ready' | 'paid' | 'cancelled' | 'failed';
   const retBase = {
-    impUid: resp.imp_uid,
     merchantUid: resp.merchant_uid,
     name: resp.name,
-    amount: resp.amount,
-    currency: resp.currency
+    amount: resp.amount
   };
   if (status === 'paid') {
     return Object.assign(retBase, {
