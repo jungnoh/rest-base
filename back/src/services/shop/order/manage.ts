@@ -38,7 +38,7 @@ ServiceResult<'ORDER_NEXIST'|'STATUS_INVALID'> {
   if (orderObj.status !== OrderStatus.Preparing) {
     return {reason: 'STATUS_INVALID', success: false};
   }
-  orderObj.status = OrderStatus.Preparing;
+  orderObj.status = OrderStatus.Sent;
   orderObj.packageId = packageId;
   await orderObj.save();
   return {success: true};

@@ -6,9 +6,9 @@ import OrderItemModel, { OrderItemDoc } from 'models/orderItem';
 import ProductModel from 'models/product';
 import ProductOptionModel from 'models/productOption';
 import ReferralModel from 'models/referral';
-import * as IMPService from 'services/shop/payment/iamport';
 import { ServiceResult } from 'util/types';
 import { SearchOptions, OrderCreationDesc, OrderItemCreationDesc } from './types';
+import { handleOptionSold } from '../product';
 
 /**
  * @description 주문 객체를 가져옵니다.
@@ -57,7 +57,7 @@ export async function list(options?: Partial<SearchOptions>, page = 1, limit = D
 }
 
 /**
- * @description 새로운 주문 항목을 생성합니다.
+ * @description 판매가 이루어졌을 때 새로운 주문 항목을 생성합니다. (재고량 감소가 이루어짐)
  * @param payload OrderItem 생성을 위한 정보
  */
 export async function createOrderItem(payload: OrderItemCreationDesc):
@@ -75,6 +75,7 @@ ServiceResult<'PRODUCT_NEXIST'|'OPTION_NEXIST'|'REFERRAL_NEXIST', OrderItemDoc> 
   if (!optionObj) {
     return {reason: 'OPTION_NEXIST', success: false};
   }
+  await handleOptionSold(payload.option, payload.count);
   orderItem = Object.assign(orderItem, {
     product: payload.product,
     productName: productObj.title,

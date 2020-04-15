@@ -9,5 +9,7 @@ const schema = new mongo.Schema<ProductOption>({
   stockCount: {required: true, type: Number}
 });
 
-const ProductOptionModel = mongo.model<ProductOption & mongo.Document>('ProductOption', schema);
+export type ProductOptionDoc = ProductOption & mongo.Document;
+
+const ProductOptionModel = mongo.model<ProductOptionDoc>('ProductOption', schema);
 export default ProductOptionModel;

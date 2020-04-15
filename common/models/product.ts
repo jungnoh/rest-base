@@ -1,3 +1,4 @@
+import { ObjectId } from "bson";
 import ProductOption from "./productOption";
 
 export enum ProductType {
@@ -22,5 +23,5 @@ export default interface Product {
   // 표시 여부
   display: boolean;
   // 제품 옵션
-  options: ProductOption[];
+  options: (ProductOption | ObjectId)[];
 }

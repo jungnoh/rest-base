@@ -15,5 +15,7 @@ const schema = new mongo.Schema<Product>({
   }
 });
 
-const ProductModel = mongo.model<Product & mongo.Document>('Product', schema);
+export type ProductDoc = Product & mongo.Document;
+
+const ProductModel = mongo.model<ProductDoc>('Product', schema);
 export default ProductModel;
