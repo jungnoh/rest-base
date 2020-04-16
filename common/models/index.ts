@@ -2,6 +2,7 @@ import Address from './address';
 import AskPost from './askPost';
 import Board from './board';
 import CampaignLog from './campaignLog';
+import Category from './category';
 import Comment from './comment';
 import InboundLog from './inboundLog';
 import Order from './order';
@@ -17,6 +18,7 @@ export {
   AskPost,
   Board,
   CampaignLog,
+  Category,
   Comment,
   InboundLog,
   Order,
