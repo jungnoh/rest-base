@@ -1,7 +1,10 @@
+import { ObjectId } from "bson";
+
 /**
  * @description 상품 옵션
  */
 export default interface ProductOption {
+  _id: ObjectId;
   // 옵션명
   name: string;
   // 원래 가격 (표시 용도)

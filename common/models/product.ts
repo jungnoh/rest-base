@@ -16,7 +16,7 @@ export default interface Product {
   type: ProductType;
   // 상품명
   title: string;
-  // 상품 
+  // 상품 정보
   description: string;
   // 표시 가격
   basePrice: number;
