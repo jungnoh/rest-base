@@ -18,6 +18,7 @@ async function removeEl(id: ObjectId, recursive: boolean, updateParent = false):
       await removeEl(child as ObjectId, true);
     }
   }
+  await CategoryModel.updateMany({ancestors: el._id}, {$pull: {ancestors: el._id}});
   await el.remove();
   return true;
 }
@@ -47,6 +48,7 @@ ServiceResult<'PARENT_NEXIST', Category> {
     return {reason: 'PARENT_NEXIST', success: false};
   }
   const el = await CategoryModel.create({
+    ancestors: (parentEl ? [...parentEl.ancestors, parent] : []),
     name,
     parent
   });
@@ -91,6 +93,8 @@ ServiceResult<'NEXIST'|'PARENT_NEXIST'> {
       }
     }
   };
+  const oldAncestors = el.ancestors;
+  let newAncestors: ObjectId[] = [];
   if (parent) {
     const newParent = await CategoryModel.findById(parent);
     if (!newParent) {
@@ -99,11 +103,16 @@ ServiceResult<'NEXIST'|'PARENT_NEXIST'> {
     newParent.children.push(id);
     await newParent.save();
     await updateOldParent();
+    newAncestors = [...(newParent.ancestors as ObjectId[]), parent];
   } else {
     await updateOldParent();
   }
   el.parent = parent;
   await el.save();
+  await CategoryModel.updateMany(
+    {ancestors: el},
+    {$pull: {ancestors: {$in: oldAncestors}}, $push: { scores: { $each: newAncestors}}}
+  );
   return {success: true};
 }
 

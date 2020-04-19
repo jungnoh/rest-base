@@ -3,6 +3,11 @@ import { Category } from '@common/models';
 import mongo from 'mongoose';
 
 const schema = new mongo.Schema<Category>({
+  ancestors: {
+    default: [],
+    required: true,
+    type: [{ref: 'Category', type: ObjectId}]
+  },
   children: {
     default: [],
     required: true,
