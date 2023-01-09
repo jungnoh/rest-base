@@ -32,7 +32,7 @@
     "express-session": "^1.17.0",
     "express-validator": "^6.4.0",
     "file-type": "^14.1.4",
-    "firebase-admin": "^8.10.0",
+    "firebase-admin": "^11.4.1",
     "fs-extra": "^9.0.0",
     "git-last-commit": "^1.0.0",
     "helmet": "^3.21.3",
